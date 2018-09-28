@@ -4,9 +4,13 @@
 	"main": "index.js",
 	"license": "MIT",
 	"scripts": {
-		"dev": "nodemon -w src -w index.ts -e ts --exec ts-node --no-cache --files -r dotenv/config index.ts"
+		"dev": "nodemon -r dotenv/config -w src -w index.ts -e ts --exec ts-node --no-cache --files -r dotenv/config index.ts | pino-pretty -ct",
+		"up": "docker-compose -f docker-compose-dev.yml up -d",
+		"down": "docker-compose -f docker-compose-dev.yml down"
 	},
 	"devDependencies": {
+		"@types/koa": "^2.0.46",
+		"@types/nanoid": "^1.2.0",
 		"@types/pino": "^5.6.0",
 		"nodemon": "^1.18.4",
 		"pino-pretty": "^2.2.1",
@@ -14,11 +18,12 @@
 		"typescript": "^3.0.3"
 	},
 	"dependencies": {
-		"apollo-server-express": "^2.1.0",
+		"apollo-server-koa": "^2.1.0",
 		"dotenv": "^6.0.0",
-		"express": "^4.16.3",
 		"graphql": "^14.0.2",
 		"ioredis": "^4.0.0",
+		"koa": "^2.5.3",
+		"nanoid": "^1.2.4",
 		"pino": "^5.6.2"
 	}
 }

@@ -1,43 +1,45 @@
 import createLogger from './src/create-logger';
-import express from 'express';
-import { APIServer } from './src/apollo-server';
 import schemaGql from './src/schema.gql';
 import resolvers from './src/resolvers';
-import { ApolloServerBase } from 'apollo-server-core';
-import { createServer } from 'http';
+import Koa from 'koa';
+import { ApolloServer } from 'apollo-server-koa';
+import { setInterval } from 'timers';
+import pubsub from './src/pubsub';
 
 const port: number = process.env.PORT ? parseInt(process.env.PORT) : 3400;
 const logger = createLogger('index');
 
+function startTicker() {
+	let ticker = 0;
+
+	setInterval(() => {
+		ticker++;
+		pubsub.publish('ticker', { ticker });
+	}, 1000);
+}
+
 async function startServer() {
 	logger.debug('Starting API Server');
 
-	const app = express();
+	const app = new Koa();
 
-	const apollo = new ApolloServerBase({
+	const server = new ApolloServer({
 		typeDefs: schemaGql,
 		resolvers,
-		context: (data: any) => {},
+		context: (ctx: any) => {},
 	});
 
-	const httpServer = createServer(app);
-	apollo.installSubscriptionHandlers(httpServer);
-
-	await new Promise((resolve) => {
-		httpServer.once('listening', resolve);
-		httpServer.listen({ port });
-	});
-
-	api.applyMiddleware({
+	server.applyMiddleware(<any>{
 		app,
-		path: '/',
-		cors: { origin: '*' },
-		bodyParserConfig: { limit: '10mb' },
 	});
 
-	logger.info('Server started', {
-		port,
+	const httpServer = app.listen(port, () => {
+		logger.info('Server Listening', { port });
 	});
+
+	server.installSubscriptionHandlers(httpServer);
+
+	startTicker();
 }
 
 startServer();
