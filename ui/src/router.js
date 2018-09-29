@@ -32,24 +32,22 @@ export default new Router({
     {
       path: '/room/:id',
       name: 'room-id',
-      component: RoomLanding,
-      children: [
-        {
-          path: 'spectate',
-          name: 'room-id-spectate',
-          component: RoomSpectate
-        },
-        {
-          path: 'character',
-          name: 'room-id-character',
-          component: RoomCharacter
-        },
-        {
-          path: 'manage',
-          name: 'room-id-manage',
-          component: RoomManage
-        }
-      ]
+      component: RoomLanding
+    },
+    {
+      path: '/room/:id/spectate',
+      name: 'room-id-spectate',
+      component: RoomSpectate
+    },
+    {
+      path: '/room/:id/character',
+      name: 'room-id-character',
+      component: RoomCharacter
+    },
+    {
+      path: '/room/:id/manage',
+      name: 'room-id-manage',
+      component: RoomManage
     },
     {
       path: '/about',

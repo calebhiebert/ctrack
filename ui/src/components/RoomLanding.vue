@@ -3,7 +3,7 @@
     <h1 class="h1 text-center">Example Room</h1>
     <div class="columns">
       <div class="column">
-        <div class="card">
+        <div class="card" @click="navigate('room-id-spectate')">
           <div class="card-header">
             <div class="card-title h5">
               Spectate
@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="column">
-        <div class="card">
+        <div class="card" @click="navigate('room-id-character')">
           <div class="card-header">
             <div class="card-title h5">
               Join
@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="column">
-        <div class="card">
+        <div class="card" @click="navigate('room-id-manage')">
           <div class="card-header">
             <div class="card-title h5">
               Manage
@@ -41,6 +41,23 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    navigate(name) {
+      this.$router.push({
+        name,
+        params: {
+          id: this.$route.params.id
+        }
+      })
+    }
+  }
+}
+</script>
+
+
 <style lang="scss" scoped>
 @import '@/variables.scss';
 
