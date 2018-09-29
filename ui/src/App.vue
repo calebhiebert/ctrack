@@ -13,6 +13,31 @@ export default {
     NavBar
   },
 
+  async created() {
+    const authDetails = await this.$apollo.query({
+      query: gql`
+        query AuthCheck {
+          me {
+            id
+            name
+          }
+        } 
+      `
+    });
+
+    const authResult = authDetails.data.me;
+
+    if (authResult !== null) {
+      this.$store.commit('setUser', authResult);
+    } else {
+      this.$router.push({
+        name: 'login',
+      });
+    }
+
+    console.log(authDetails.data);
+  },
+
   apollo: {
     $subscribe: {
       ticker: {
@@ -27,7 +52,9 @@ export default {
         },
 
         result({data}) {
-          console.log(data);
+          if (data.ticker % 10 === 0) {
+            console.log(data);
+          }
         }
       }
     }

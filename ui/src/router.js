@@ -1,6 +1,12 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
+import CreateRoom from './views/CreateRoom.vue';
+import Login from './views/Login.vue';
+import RoomLanding from './views/RoomLanding.vue';
+import RoomCharacter from './views/RoomCharacter.vue';
+import RoomManage from './views/RoomManage.vue';
+import RoomSpectate from './views/RoomSpectate.vue';
 
 Vue.use(Router);
 
@@ -12,6 +18,38 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
+    {
+      path: '/room/create',
+      name: 'room-create',
+      component: CreateRoom
+    },
+    {
+      path: '/room/:id',
+      name: 'room-id',
+      component: RoomLanding,
+      children: [
+        {
+          path: 'spectate',
+          name: 'room-id-spectate',
+          component: RoomSpectate
+        },
+        {
+          path: 'character',
+          name: 'room-id-character',
+          component: RoomCharacter
+        },
+        {
+          path: 'manage',
+          name: 'room-id-manage',
+          component: RoomManage
+        }
+      ]
     },
     {
       path: '/about',
