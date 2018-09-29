@@ -2,6 +2,7 @@
   <header class='navbar'>
     <section class='navbar-section'>
       <router-link :to="{name: 'room-create'}" class='btn btn-link'>Create Room</router-link>
+      <router-link :to="{name: 'room-join'}" class='btn btn-link'>Join Room</router-link>
     </section>
     <section class='navbar-center'>
       <!-- centered logo or brand -->
@@ -12,7 +13,5 @@
   </header>
 </template>
 <script>
-export default {
-  
-}
+export default {};
 </script>

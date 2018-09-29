@@ -7,6 +7,7 @@ import RoomLanding from './views/RoomLanding.vue';
 import RoomCharacter from './views/RoomCharacter.vue';
 import RoomManage from './views/RoomManage.vue';
 import RoomSpectate from './views/RoomSpectate.vue';
+import JoinRoom from './views/JoinRoom.vue';
 
 Vue.use(Router);
 
@@ -17,37 +18,42 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
     },
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: Login,
     },
     {
       path: '/room/create',
       name: 'room-create',
-      component: CreateRoom
+      component: CreateRoom,
+    },
+    {
+      path: '/room/join',
+      name: 'room-join',
+      component: JoinRoom,
     },
     {
       path: '/room/:id',
       name: 'room-id',
-      component: RoomLanding
+      component: RoomLanding,
     },
     {
       path: '/room/:id/spectate',
       name: 'room-id-spectate',
-      component: RoomSpectate
+      component: RoomSpectate,
     },
     {
       path: '/room/:id/character',
       name: 'room-id-character',
-      component: RoomCharacter
+      component: RoomCharacter,
     },
     {
       path: '/room/:id/manage',
       name: 'room-id-manage',
-      component: RoomManage
+      component: RoomManage,
     },
     {
       path: '/about',
@@ -55,8 +61,7 @@ export default new Router({
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: 'about' */ './views/About.vue')
-    }
-  ]
+      component: () => import(/* webpackChunkName: 'about' */ './views/About.vue'),
+    },
+  ],
 });

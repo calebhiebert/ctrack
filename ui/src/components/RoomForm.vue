@@ -18,17 +18,20 @@
       </div>
 
       <!-- Password Input -->
-      <div class="form-group" v-if="usePassword">
+      <div class="form-group" v-if="usePassword" :class="{'has-error': errors.has('password')}">
         <label class="form-label text-bold label-lg">
           Room Password
         </label>
         <input class="form-input input-lg" v-model="password" name="password" type="password" placeholder="****" v-validate="{required: true, min: 4, max: 255}">
-        </div>
+        <p class="form-input-hint" v-if="errors.has('password')">
+          {{ errors.first('password') }}
+        </p>
+      </div>
 
-        <!-- Button -->
-        <button class="btn btn-primary float-right">
-          Create Room
-        </button>
+      <!-- Button -->
+      <button class="btn btn-primary float-right">
+        Create Room
+      </button>
     </form>
   </div>
 </template>
@@ -40,8 +43,8 @@ export default {
     return {
       roomName: '',
       usePassword: false,
-      password: ''
-    }
+      password: '',
+    };
   },
 
   methods: {
@@ -63,19 +66,19 @@ export default {
             input: {
               name: this.roomName,
               usePassword: this.usePassword,
-              password: this.password
-            }
-          }
+              password: this.password,
+            },
+          },
         });
 
         this.$router.replace({
           name: 'room-id',
           params: {
             id: result.data.createRoom.id,
-          }
-        })
+          },
+        });
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
