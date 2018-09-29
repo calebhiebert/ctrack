@@ -21,6 +21,8 @@ export default gql`
 		id: String!
 		name: String!
 		usePassword: Boolean!
+		masters: [User!]!
+		users: [User!]!
 	}
 
 	type AuthResult {

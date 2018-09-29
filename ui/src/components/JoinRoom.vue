@@ -22,6 +22,9 @@
           <label class="form-label label-lg text-bold">Password</label>
           <input class="form-input input-lg" type="password" name="password" placeholder="****" v-model="password">
       </div>
+          <div class="toast toast-error mb-2" v-if="invalidPassword">
+            Sorry, but that password is not correct!
+          </div>
 
           <button class="btn btn-primary float-right" :disabled="!canJoin">
             Join
@@ -38,6 +41,7 @@ export default {
       loadingRoom: false,
       roomData: null,
       roomNotFound: false,
+      invalidPassword: false,
 
       tag: '',
       password: '',
@@ -58,6 +62,9 @@ export default {
         }
       }
     },
+    password() {
+      this.invalidPassword = false;
+    }
   },
 
   computed: {
@@ -105,7 +112,7 @@ export default {
       }
 
       try {
-        const joinResult = this.$apollo.mutate({
+        const joinResult = await this.$apollo.mutate({
           mutation: gql`
             mutation JoinRoom($input: JoinRoomOptions!) {
               joinRoom(input: $input) {
@@ -122,8 +129,12 @@ export default {
             }
           }
         })
+
+        console.log(joinResult.data.joinRoom)
       } catch(err) {
-        console.log(err, err.errors);
+        if (err.graphQLErrors && err.graphQLErrors[0] && err.graphQLErrors[0].extensions.code === 'INVALID_PASSWORD') {
+          this.invalidPassword = true;
+        }
       }
     }
   },

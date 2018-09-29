@@ -3,6 +3,8 @@ import {
 	createRoomResolver,
 	getRoomResolver,
 	joinRoomResolver,
+	mastersOnRoomResolver,
+	usersOnRoomResolver,
 } from './resolvers/room';
 import { authenticateResolver, meResolver } from './resolvers/auth';
 
@@ -23,5 +25,10 @@ export default {
 		ticker: {
 			subscribe: () => pubsub.asyncIterator('ticker'),
 		},
+	},
+
+	Room: {
+		masters: mastersOnRoomResolver,
+		users: usersOnRoomResolver,
 	},
 };
