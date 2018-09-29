@@ -1,22 +1,27 @@
 import pubsub from './pubsub';
-import { createRoomResolver, getRoomResolver } from './resolvers/room';
+import {
+	createRoomResolver,
+	getRoomResolver,
+	joinRoomResolver,
+} from './resolvers/room';
 import { authenticateResolver, meResolver } from './resolvers/auth';
 
 export default {
-  Query: {
-    dummy: () => 'hi',
-    me: meResolver,
-    room: getRoomResolver,
-  },
+	Query: {
+		dummy: () => 'hi',
+		me: meResolver,
+		room: getRoomResolver,
+	},
 
-  Mutation: {
-    createRoom: createRoomResolver,
-    authenticate: authenticateResolver,
-  },
+	Mutation: {
+		createRoom: createRoomResolver,
+		authenticate: authenticateResolver,
+		joinRoom: joinRoomResolver,
+	},
 
-  Subscription: {
-    ticker: {
-      subscribe: () => pubsub.asyncIterator('ticker'),
-    },
-  },
+	Subscription: {
+		ticker: {
+			subscribe: () => pubsub.asyncIterator('ticker'),
+		},
+	},
 };

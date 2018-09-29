@@ -1,31 +1,31 @@
 <template>
   <div class="card p-2">
-    <form>
+    <form @submit.prevent="submit">
       <div class="form-group">
         <label class="form-label label-lg text-bold">Room Tag</label>
         <input class="form-input input-lg" maxlength="4" name="tag" placeholder="XXXX" v-model="tag">
       </div>
 
-      <div class="loading" v-if="loadingRoom"></div>
+        <div class="loading" v-if="loadingRoom"></div>
 
-      <div class="toast toast-error mb-2" v-if="roomNotFound">
-        Sorry, but I couldn't find a room with that tag!
+        <div class="toast toast-error mb-2" v-if="roomNotFound">
+          Sorry, but I couldn't find a room with that tag!
+        </div>
+
+        <div v-if="roomData">
+          <h3>
+            {{ roomData.name }}
+          </h3>
+        </div>
+
+        <div class="form-group" v-if="roomData && roomData.usePassword === true">
+          <label class="form-label label-lg text-bold">Password</label>
+          <input class="form-input input-lg" type="password" name="password" placeholder="****" v-model="password">
       </div>
 
-      <div v-if="roomData">
-        <h3>
-          {{ roomData.name }}
-        </h3>
-      </div>
-
-      <div class="form-group" v-if="roomData && roomData.usePassword === true">
-        <label class="form-label label-lg text-bold">Password</label>
-        <input class="form-input input-lg" type="password" name="password" placeholder="****" v-model="password">
-      </div>
-
-      <button class="btn btn-primary float-right" :disabled="!canJoin">
-        Join
-      </button>
+          <button class="btn btn-primary float-right" :disabled="!canJoin">
+            Join
+          </button>
     </form>
   </div>
 </template>
@@ -96,6 +96,36 @@ export default {
 
       this.loadingRoom = false;
     },
+
+    async submit() {
+      const valid = await this.$validator.validateAll();
+
+      if (!valid) {
+        return;
+      }
+
+      try {
+        const joinResult = this.$apollo.mutate({
+          mutation: gql`
+            mutation JoinRoom($input: JoinRoomOptions!) {
+              joinRoom(input: $input) {
+                id
+                name
+              }
+            }
+          `,
+
+          variables: {
+            input: {
+              id: this.tag,
+              password: this.password
+            }
+          }
+        })
+      } catch(err) {
+        console.log(err, err.errors);
+      }
+    }
   },
 };
 </script>
