@@ -118,6 +118,14 @@ export default {
               joinRoom(input: $input) {
                 id
                 name
+                masters {
+                  id
+                  name
+                }
+                users {
+                  id
+                  name
+                }
               }
             }
           `,
@@ -128,9 +136,16 @@ export default {
               password: this.password
             }
           }
-        })
+        });
 
-        console.log(joinResult.data.joinRoom)
+        this.$store.commit('setRoom', joinResult.data.joinRoom);
+
+        this.$router.replace({
+          name: 'room-id',
+          params: {
+            id: joinResult.data.joinRoom.id
+          }
+        });
       } catch(err) {
         if (err.graphQLErrors && err.graphQLErrors[0] && err.graphQLErrors[0].extensions.code === 'INVALID_PASSWORD') {
           this.invalidPassword = true;

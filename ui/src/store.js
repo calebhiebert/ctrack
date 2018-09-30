@@ -8,10 +8,16 @@ export default new Vuex.Store({
     token: '',
     me: null
   },
+
   mutations: {
     setUser(state, user) {
       state.me = user;
     },
+
+    setRoom(state, room) {
+      state.room = room;
+    },
+
     setToken(state, token) {
       state.token = token;
     }

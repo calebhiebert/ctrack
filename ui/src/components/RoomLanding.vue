@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="h1 text-center">Example Room</h1>
+    <h1 class="h1 text-center">{{ room.name }}</h1>
     <div class="columns">
       <div class="column">
         <div class="card" @click="navigate('room-id-spectate')">
@@ -26,7 +26,7 @@
           </div>
         </div>
       </div>
-      <div class="column">
+      <div class="column" v-if="isMaster">
         <div class="card" @click="navigate('room-id-manage')">
           <div class="card-header">
             <div class="card-title h5">
@@ -44,19 +44,32 @@
 
 <script>
 export default {
+
+  props: {
+    room: {
+      type: Object,
+      required: true
+    }
+  },
+
   methods: {
     navigate(name) {
       this.$router.push({
         name,
         params: {
-          id: this.$route.params.id
+          id: this.room.id
         }
       })
+    }
+  },
+
+  computed: {
+    isMaster() {
+      return this.room.masters.some(m => m.id === this.$store.state.me.id)
     }
   }
 }
 </script>
-
 
 <style lang="scss" scoped>
 @import '@/variables.scss';
