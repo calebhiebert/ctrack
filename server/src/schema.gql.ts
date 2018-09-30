@@ -11,6 +11,7 @@ export default gql`
 		createRoom(input: CreateRoomOptions!): Room!
 		authenticate(username: String!): AuthResult!
 		joinRoom(input: JoinRoomOptions!): Room!
+		addEntity(roomId: ID!, input: AddEntityInput!): Entity!
 	}
 
 	type Subscription {
@@ -23,11 +24,27 @@ export default gql`
 		usePassword: Boolean!
 		masters: [User!]!
 		users: [User!]!
+		entities: [Entity!]!
 	}
 
 	type AuthResult {
 		token: String!
 		user: User!
+	}
+
+	type Entity {
+		id: ID!
+		type: EntityType!
+		name: String!
+		controllingIds: [String!]!
+		hitpoints: Int!
+		maxHitpoints: Int!
+	}
+
+	enum EntityType {
+		character
+		monster
+		pet
 	}
 
 	type User {
@@ -44,5 +61,12 @@ export default gql`
 	input JoinRoomOptions {
 		id: String!
 		password: String
+	}
+
+	input AddEntityInput {
+		type: EntityType!
+		name: String!
+		hitpoints: Int
+		maxHitpoints: Int!
 	}
 `;

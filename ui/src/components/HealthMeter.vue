@@ -1,6 +1,6 @@
 <template>
-  <div class="bar">
-    <div class="bar-item" :style="{width: barWidth}">{{ hitpoints.toFixed(0) }}/{{ maxHitpoints }}</div>
+  <div class="bar noselect">
+    <div class="bar-item noselect" :class="[hpClass]" :style="{width: barWidth}">{{ hitpoints.toFixed(0) }}/{{ maxHitpoints }}</div>
   </div>
 </template>
 <script>
@@ -19,20 +19,44 @@ export default {
 
   computed: {
     barWidth() {
-      return (this.hitpoints / this.maxHitpoints * 100).toFixed(0) + '%'
+      return this.hpPercent + '%'
     },
 
-    optimum() {
-      return this.maxHitpoints * 0.8
+    hpPercent() {
+      return (this.hitpoints / this.maxHitpoints * 100).toFixed(0)
     },
 
-    low() {
-      return this.maxHitpoints * 0.3;
+    hpClass() {
+      if (this.hpPercent >= 65) {
+        return 'hp-high';
+      } else if (this.hpPercent < 65 && this.hpPercent >= 30) {
+        return 'hp-med';
+      } else if (this.hpPercent < 30) {
+        return 'hp-low';
+      }
     },
-    
-    high() {
-      return this.maxHitpoints * 0.6
-    }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/variables.scss';
+
+.hp-high {
+	background-color: $success-color !important;
+}
+
+.hp-med {
+	background-color: $warning-color !important;
+}
+
+.hp-low {
+	background-color: $error-color !important;
+}
+
+.bar-item {
+	transition-timing-function: ease-in-out;
+	transition: width 0.4s;
+}
+</style>
+

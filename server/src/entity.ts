@@ -1,10 +1,12 @@
 import { IJSONSerializable } from './json-serializable';
+import nanoid from 'nanoid';
 
 export class Entity implements IJSONSerializable<Entity> {
 	public static CHARACTER: EntityType = 'character';
 	public static MONSTER: EntityType = 'monster';
 	public static PET: EntityType = 'pet';
 
+	public id: string;
 	public type: EntityType;
 	public name: string;
 	public controllingIds: string[];
@@ -13,8 +15,8 @@ export class Entity implements IJSONSerializable<Entity> {
 	public maxHitpoints: number;
 
 	constructor(
-		name: string,
-		maxHitpoints: number,
+		name: string = 'dummy',
+		maxHitpoints: number = 100,
 		hitpoints: number = 0,
 		type: EntityType = Entity.CHARACTER
 	) {
@@ -23,6 +25,7 @@ export class Entity implements IJSONSerializable<Entity> {
 		this.controllingIds = [];
 		this.maxHitpoints = maxHitpoints;
 		this.hitpoints = hitpoints === 0 ? maxHitpoints : hitpoints;
+		this.id = nanoid();
 	}
 
 	encode(): string {

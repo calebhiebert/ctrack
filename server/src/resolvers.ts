@@ -7,6 +7,7 @@ import {
 	usersOnRoomResolver,
 } from './resolvers/room';
 import { authenticateResolver, meResolver } from './resolvers/auth';
+import { addEntityResolver } from './resolvers/entity';
 
 export default {
 	Query: {
@@ -19,6 +20,7 @@ export default {
 		createRoom: createRoomResolver,
 		authenticate: authenticateResolver,
 		joinRoom: joinRoomResolver,
+		addEntity: addEntityResolver,
 	},
 
 	Subscription: {
