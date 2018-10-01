@@ -14,7 +14,7 @@
           <button class="btn btn-link btn-sm" @click="deleteEntity" v-if="hideDelete !== true">
             <i class="icon icon-cross" /> 
           </button>
-          <button class="btn btn-link btn-sm" @click="collapse">
+          <button class="btn btn-link btn-sm" @click="collapse" v-if="expandable">
             <i class="icon icon-arrow-up" /> 
           </button>
         </div>
@@ -67,11 +67,17 @@ export default {
       required: false,
       default: false,
     },
+
+    expandable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 
   data() {
     return {
-      expanded: false,
+      expanded: this.expandable ? false : true,
     };
   },
 

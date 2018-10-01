@@ -1,9 +1,11 @@
 <template>
   <div>
-    <character-edit 
+    <character-edit
+      ref="editor"
       :entity="entity" 
       v-for="entity of myEntities" 
       :key="entity.id"
+      :expandable="false"
       hide-delete
     />
   </div>
@@ -52,7 +54,15 @@ export default {
     console.log(ent);
   },
 
-  methods: {},
+  methods: {
+    expand() {
+      this.$refs.editor.expand();
+    },
+
+    collapse() {
+      this.$refs.editor.collapse();
+    },
+  },
 
   computed: {
     myEntities() {

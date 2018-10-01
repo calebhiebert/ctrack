@@ -54,21 +54,28 @@ export default {
   data() {
     return {
       open: false,
+      keylistener: (e) => {
+        if (e.keyCode === 27) {
+          this.close('escape');
+        }
+      },
     };
   },
 
   methods: {
     close(reason) {
-      this.open = false;
+      this.hide();
       this.$emit('close', { reason });
     },
 
     hide() {
       this.open = false;
+      document.onkeyup = null;
     },
 
     show() {
       this.open = true;
+      document.onkeyup = this.keylistener;
     },
   },
 };

@@ -28,6 +28,18 @@
               Import Character Data
             </a>
           </li>
+          <li class="menu-item" @click="expandAll">
+            <a>
+              <i class="icon icon-resize-vert"></i>
+              Expand All
+            </a>
+          </li>
+          <li class="menu-item" @click="collapseAll">
+            <a>
+              <i class="icon icon-resize-horiz"></i>
+              Collapse All
+            </a>
+          </li>
           <li class="divider" data-content="Users" />
           <li class="menu-item" v-for="user of room.users" :key="user.id">
             <user-tile :user="user" />
@@ -46,7 +58,7 @@
             Create some new characters/monsters to get started
           </div>
         </div>
-        <character-edit class="mt-2" :entity="entity" v-for="entity in room.entities" :key="entity.id" />
+        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :entity="entity" v-for="entity in room.entities" :key="entity.id" />
       </div>
     </div>
   </div>
@@ -61,6 +73,24 @@ export default {
   components: {
     CharacterEdit,
     UserTile,
+  },
+
+  methods: {
+    expandAll() {
+      Object.keys(this.$refs).forEach((k) => {
+        if (k.startsWith('ent-')) {
+          this.$refs[k][0].expand();
+        }
+      });
+    },
+
+    collapseAll() {
+      Object.keys(this.$refs).forEach((k) => {
+        if (k.startsWith('ent-')) {
+          this.$refs[k][0].collapse();
+        }
+      });
+    },
   },
 
   apollo: {
@@ -140,3 +170,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.menu-item {
+  cursor: pointer !important;
+}
+</style>
