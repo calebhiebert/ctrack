@@ -26,8 +26,7 @@ export const removeEntityResolver: IFieldResolver<void, Context> = async (root, 
   }
 
   await rm.deleteEntity(entityId);
-
-  pubsub.publish('room', { room: await rm.get() });
+  await rm.notifyChange();
 
   return true;
 };
@@ -70,7 +69,7 @@ export const addEntityResolver: IFieldResolver<void, Context> = async (root, arg
   await rm.addEntity(ent);
   room = await rm.get();
 
-  pubsub.publish('room', { room });
+  await rm.notifyChange();
 
   return ent;
 };

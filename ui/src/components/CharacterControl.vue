@@ -1,22 +1,27 @@
 <template>
-  <div class="card p-2" @click="updateHp">
-    <h3>Hof</h3>
-    <health-meter :hitpoints="hp" :maxHitpoints="200" />
+  <div>
+    <character-edit 
+      :entity="entity" 
+      v-for="entity of myEntities" 
+      :key="entity.id"
+      hide-delete
+    />
   </div>
 </template>
 <script>
-import HealthMeter from '@/components/HealthMeter.vue';
+import CharacterEdit from '@/components/CharacterEdit.vue';
 import gql from 'graphql-tag';
 
 export default {
   components: {
-    HealthMeter
+    CharacterEdit,
   },
 
-  data() {
-    return {
-      hp: Math.random() * 200
-    }
+  props: {
+    room: {
+      type: Object,
+      required: true,
+    },
   },
 
   async created() {
@@ -39,25 +44,29 @@ export default {
         input: {
           type: 'character',
           name: 'Hof',
-          maxHitpoints: 100
-        }
-      }
+          maxHitpoints: 100,
+        },
+      },
     });
 
     console.log(ent);
   },
 
-  methods: {
-    updateHp() {
-      this.hp = Math.random() * 200
-    }
-  }
-}
+  methods: {},
+
+  computed: {
+    myEntities() {
+      const userId = this.$store.state.me.id;
+
+      return this.room.entities.filter((entity) => entity.controllingIds.indexOf(userId) !== -1);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .meter {
-	transition: all 0.25s;
+  transition: all 0.25s;
 }
 </style>
 

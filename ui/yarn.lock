@@ -7367,6 +7367,10 @@ svgo@^1.0.0:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
+sweetalert2@7.x:
+  version "7.28.4"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-7.28.4.tgz#523d9c3b63f26c8be0e7cbc259f34ddced83ef22"
+
 symbol-observable@^1.0.2, symbol-observable@^1.0.4:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
@@ -7907,6 +7911,12 @@ vue-style-loader@^4.1.0:
   dependencies:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
+
+vue-sweetalert2@^1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/vue-sweetalert2/-/vue-sweetalert2-1.5.3.tgz#a6394b835e454173d498ed6ddf97cee96910023f"
+  dependencies:
+    sweetalert2 "7.x"
 
 vue-template-compiler@^2.5.17:
   version "2.5.17"

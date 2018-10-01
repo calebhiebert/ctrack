@@ -1,0 +1,76 @@
+<template>
+  <div 
+    :class="{active: open, 'modal-sm': size === 'small', 'modal-lg': size === 'large'}"
+    class="modal">
+    <a 
+      href="#close" 
+      class="modal-overlay" 
+      aria-label="Close"
+      @click="close('background')" />
+    <div class="modal-container">
+      <div class="modal-header">
+        <slot name="header">
+          <a 
+            href="#close" 
+            class="btn btn-clear float-right" 
+            aria-label="Close" 
+            @click="close('close')" />
+          <div class="modal-title h5">{{ title }}</div>
+        </slot>
+      </div>
+      <div class="modal-body">
+        <div class="content">
+          <slot />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <slot name="footer">
+          <button 
+            class="btn btn-primary" 
+            @click="close('ok')">OK</button>
+          <button 
+            class="btn btn-primary" 
+            @click="close('cancel')">Cancel</button>
+        </slot>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  props: {
+    title: {
+      type: String,
+      required: false,
+      default: 'Modal'
+    },
+    size: {
+      type: String,
+      required: false,
+      default: 'none'
+    }
+  },
+
+  data() {
+    return {
+      open: false,
+    }
+  },
+
+  methods: {
+    close(reason) {
+      this.open = false;
+      this.$emit('close', { reason })
+    },
+
+    hide() {
+      this.open = false;
+    },
+
+    show() {
+      this.open = true;
+    }
+  }
+}
+</script>
+

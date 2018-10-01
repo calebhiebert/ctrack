@@ -6,7 +6,7 @@
       <button class="btn btn-link btn-sm float-right" @click="collapse">
         <i class="icon icon-arrow-up" /> 
       </button>
-      <button class="btn btn-link btn-sm float-right" @click="deleteEntity">
+      <button class="btn btn-link btn-sm float-right" @click="deleteEntity" v-if="hideDelete !== true">
         <i class="icon icon-cross" /> 
       </button>
       <h3>{{ entity.name }}</h3>
@@ -43,6 +43,12 @@ export default {
       type: Object,
       required: true,
     },
+
+    hideDelete: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   data() {
@@ -54,7 +60,32 @@ export default {
   async created() {},
 
   methods: {
-    deleteEntity() {},
+    async deleteEntity() {
+      const result = await this.$swal({
+        type: 'question',
+        title: 'Are you sure?',
+        text: 'You cannot undo this',
+        showCancelButton: true,
+      });
+
+      if (result.value === true) {
+        // Do Delete
+        const deleteResult = await this.$apollo.mutate({
+          mutation: gql`
+            mutation DeleteEntity($roomId: ID!, $entityId: ID!) {
+              removeEntity(roomId: $roomId, entityId: $entityId)
+            }
+          `,
+
+          variables: {
+            roomId: this.$route.params.id,
+            entityId: this.entity.id,
+          },
+        });
+
+        console.log(deleteResult);
+      }
+    },
 
     expand() {
       this.expanded = true;

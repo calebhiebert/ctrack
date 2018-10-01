@@ -35,6 +35,8 @@ export const joinRoomResolver: IFieldResolver<null, Context> = async (root, args
 
   await rm.addUser(ctx.user.id);
 
+  await rm.notifyChange();
+
   return room;
 };
 

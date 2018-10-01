@@ -1,6 +1,7 @@
 import { Redis } from 'ioredis';
 import nanoid from 'nanoid';
 import { Entity } from './entity';
+import pubsub from './pubsub';
 
 export interface IRoom {
   id: string;
@@ -132,6 +133,10 @@ export class Room {
     }
 
     return null;
+  }
+
+  public async notifyChange(): Promise<void> {
+    pubsub.publish('room', { room: await this.get() });
   }
 
   private async batchGetUsers(ids: string[]): Promise<any> {
