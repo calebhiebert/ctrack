@@ -13,6 +13,7 @@ export default gql`
     joinRoom(input: JoinRoomOptions!): Room!
     addEntity(roomId: ID!, input: AddEntityInput!): Entity!
     removeEntity(roomId: ID!, entityId: ID!): Boolean!
+    changeEntity(roomId: ID!, entityId: ID!, input: ModifyEntityInput!): Entity!
   }
 
   type Subscription {

@@ -8,7 +8,7 @@
       aria-label="Close"
       @click="close('background')" />
     <div class="modal-container">
-      <div class="modal-header">
+      <div class="modal-header pb-0">
         <slot name="header">
           <a 
             href="#close" 
@@ -18,18 +18,18 @@
           <div class="modal-title h5">{{ title }}</div>
         </slot>
       </div>
-      <div class="modal-body">
-        <div class="content">
+      <div class="modal-body py-0">
+        <div class="content" v-if="open">
           <slot />
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer py-0">
         <slot name="footer">
           <button 
             class="btn btn-primary" 
             @click="close('ok')">OK</button>
           <button 
-            class="btn btn-primary" 
+            class="btn btn-primary ml-1" 
             @click="close('cancel')">Cancel</button>
         </slot>
       </div>
@@ -42,25 +42,25 @@ export default {
     title: {
       type: String,
       required: false,
-      default: 'Modal'
+      default: 'Modal',
     },
     size: {
       type: String,
       required: false,
-      default: 'none'
-    }
+      default: 'none',
+    },
   },
 
   data() {
     return {
       open: false,
-    }
+    };
   },
 
   methods: {
     close(reason) {
       this.open = false;
-      this.$emit('close', { reason })
+      this.$emit('close', { reason });
     },
 
     hide() {
@@ -69,8 +69,8 @@ export default {
 
     show() {
       this.open = true;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 

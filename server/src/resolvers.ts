@@ -9,7 +9,7 @@ import {
   roomSubscriptionResolver,
 } from './resolvers/room';
 import { authenticateResolver, meResolver } from './resolvers/auth';
-import { addEntityResolver, removeEntityResolver } from './resolvers/entity';
+import { addEntityResolver, removeEntityResolver, changeEntityResolver } from './resolvers/entity';
 
 export default {
   Query: {
@@ -24,6 +24,7 @@ export default {
     joinRoom: joinRoomResolver,
     addEntity: addEntityResolver,
     removeEntity: removeEntityResolver,
+    changeEntity: changeEntityResolver,
   },
 
   Subscription: {

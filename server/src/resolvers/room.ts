@@ -76,5 +76,5 @@ export const entitiesOnRoomResolver: IFieldResolver<IRoom, Context> = async (roo
 };
 
 export const roomSubscriptionResolver: IFieldResolver<void, Context> = (root, args, ctx) => {
-  return pubsub.asyncIterator('room');
+  return pubsub.asyncIterator(`room-${args.id}`);
 };

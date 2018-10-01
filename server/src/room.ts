@@ -47,6 +47,11 @@ export class Room {
     await this.redis.hset(this.subkey('entities'), entity.id, entity.encode());
   }
 
+  public async changeEntity(entity: Entity): Promise<Entity> {
+    await this.redis.hset(this.subkey('entities'), entity.id, entity.encode());
+    return entity;
+  }
+
   public async getEntities(): Promise<Entity[] | null> {
     const entities = await this.redis.hgetall(this.subkey('entities'));
 
@@ -136,7 +141,7 @@ export class Room {
   }
 
   public async notifyChange(): Promise<void> {
-    pubsub.publish('room', { room: await this.get() });
+    pubsub.publish(`room-${this.id}`, { room: await this.get() });
   }
 
   private async batchGetUsers(ids: string[]): Promise<any> {

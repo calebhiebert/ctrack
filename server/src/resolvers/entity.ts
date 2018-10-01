@@ -2,7 +2,6 @@ import { IFieldResolver, ApolloError } from 'apollo-server-koa';
 import { Context } from '../context';
 import { Entity } from '../entity';
 import { Room } from '../room';
-import pubsub from '../pubsub';
 
 export const removeEntityResolver: IFieldResolver<void, Context> = async (root, args, ctx) => {
   if (!ctx.user) {
@@ -29,6 +28,59 @@ export const removeEntityResolver: IFieldResolver<void, Context> = async (root, 
   await rm.notifyChange();
 
   return true;
+};
+
+export const changeEntityResolver: IFieldResolver<void, Context> = async (root, args, ctx) => {
+  if (!ctx.user) {
+    throw new ApolloError('Not authenticated', 'NOT_AUTHENTICATED');
+  }
+
+  const roomId = args.roomId;
+  const entityId = args.entityId;
+  const input = args.input;
+
+  const rm = new Room(ctx.redis, roomId);
+
+  let room = await rm.get();
+
+  if (room === null) {
+    throw new ApolloError('Could not find room', 'ROOM_NOT_FOUND');
+  }
+
+  const entity = await rm.getEntity(entityId);
+  const isMaster = await rm.isMaster(ctx.user.id);
+
+  if (entity === null) {
+    throw new ApolloError('Could not find entity', 'ENTITY_NOT_FOUND');
+  }
+
+  if (entity.controllingIds.indexOf(ctx.user.id) === -1 && !isMaster) {
+    throw new ApolloError('Not enough permissions', 'NOT_ENOUGH_PERMISSIONS');
+  }
+
+  if (input.type) {
+    entity.type = input.type;
+  }
+
+  if (input.name) {
+    entity.name = input.name;
+  }
+
+  if (input.hitpoints) {
+    entity.hitpoints = input.hitpoints;
+  }
+
+  if (input.maxHitpoints) {
+    entity.maxHitpoints = input.maxHitpoints;
+  }
+
+  if (input.controllingIds) {
+    entity.controllingIds = input.controllingIds;
+  }
+
+  await rm.changeEntity(entity);
+  await rm.notifyChange();
+  return entity;
 };
 
 export const addEntityResolver: IFieldResolver<void, Context> = async (root, args, ctx) => {
