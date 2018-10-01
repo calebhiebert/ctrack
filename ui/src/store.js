@@ -6,7 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     token: '',
-    me: null
+    me: null,
+    entity: null,
   },
 
   mutations: {
@@ -20,7 +21,7 @@ export default new Vuex.Store({
 
     setToken(state, token) {
       state.token = token;
-    }
+    },
   },
-  actions: {}
+  actions: {},
 });

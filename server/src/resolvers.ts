@@ -1,36 +1,44 @@
 import pubsub from './pubsub';
 import {
-	createRoomResolver,
-	getRoomResolver,
-	joinRoomResolver,
-	mastersOnRoomResolver,
-	usersOnRoomResolver,
+  createRoomResolver,
+  getRoomResolver,
+  joinRoomResolver,
+  mastersOnRoomResolver,
+  usersOnRoomResolver,
+  entitiesOnRoomResolver,
+  roomSubscriptionResolver,
 } from './resolvers/room';
 import { authenticateResolver, meResolver } from './resolvers/auth';
-import { addEntityResolver } from './resolvers/entity';
+import { addEntityResolver, removeEntityResolver } from './resolvers/entity';
 
 export default {
-	Query: {
-		dummy: () => 'hi',
-		me: meResolver,
-		room: getRoomResolver,
-	},
+  Query: {
+    dummy: () => 'hi',
+    me: meResolver,
+    room: getRoomResolver,
+  },
 
-	Mutation: {
-		createRoom: createRoomResolver,
-		authenticate: authenticateResolver,
-		joinRoom: joinRoomResolver,
-		addEntity: addEntityResolver,
-	},
+  Mutation: {
+    createRoom: createRoomResolver,
+    authenticate: authenticateResolver,
+    joinRoom: joinRoomResolver,
+    addEntity: addEntityResolver,
+    removeEntity: removeEntityResolver,
+  },
 
-	Subscription: {
-		ticker: {
-			subscribe: () => pubsub.asyncIterator('ticker'),
-		},
-	},
+  Subscription: {
+    ticker: {
+      subscribe: () => pubsub.asyncIterator('ticker'),
+    },
 
-	Room: {
-		masters: mastersOnRoomResolver,
-		users: usersOnRoomResolver,
-	},
+    room: {
+      subscribe: roomSubscriptionResolver,
+    },
+  },
+
+  Room: {
+    masters: mastersOnRoomResolver,
+    users: usersOnRoomResolver,
+    entities: entitiesOnRoomResolver,
+  },
 };

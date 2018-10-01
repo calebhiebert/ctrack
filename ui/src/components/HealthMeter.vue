@@ -1,6 +1,12 @@
 <template>
-  <div class="bar noselect">
-    <div class="bar-item noselect" :class="[hpClass]" :style="{width: barWidth}">{{ hitpoints.toFixed(0) }}/{{ maxHitpoints }}</div>
+  <div class="bar noselect" :class="{'bar-sm': barSize === 'small'}">
+    <!-- Large Bar -->
+    <div class="bar-item noselect tooltip" :data-tooltip="tooltipText" :class="[hpClass]" :style="{width: barWidth}" v-if="barSize === 'large'">
+      {{ hitpoints.toFixed(0) }}/{{ maxHitpoints }}
+    </div>
+
+    <!-- Small bar -->
+    <div class="bar-item noselect tooltip" :data-tooltip="tooltipText" :class="[hpClass]" :style="{width: barWidth}" v-else></div>
   </div>
 </template>
 <script>
@@ -13,17 +19,23 @@ export default {
 
     maxHitpoints: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
+
+    barSize: {
+      type: String,
+      required: false,
+      default: 'large',
+    },
   },
 
   computed: {
     barWidth() {
-      return this.hpPercent + '%'
+      return this.hpPercent + '%';
     },
 
     hpPercent() {
-      return (this.hitpoints / this.maxHitpoints * 100).toFixed(0)
+      return ((this.hitpoints / this.maxHitpoints) * 100).toFixed(0);
     },
 
     hpClass() {
@@ -35,28 +47,32 @@ export default {
         return 'hp-low';
       }
     },
-  }
-}
+
+    tooltipText() {
+      return `${this.hitpoints}/${this.maxHitpoints}\n${this.barWidth}`;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 @import '@/variables.scss';
 
 .hp-high {
-	background-color: $success-color !important;
+  background-color: $success-color !important;
 }
 
 .hp-med {
-	background-color: $warning-color !important;
+  background-color: $warning-color !important;
 }
 
 .hp-low {
-	background-color: $error-color !important;
+  background-color: $error-color !important;
 }
 
 .bar-item {
-	transition-timing-function: ease-in-out;
-	transition: width 0.4s;
+  transition-timing-function: ease-in-out;
+  transition: width 0.4s;
 }
 </style>
 
