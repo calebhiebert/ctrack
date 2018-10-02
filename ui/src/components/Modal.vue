@@ -18,12 +18,12 @@
           <div class="modal-title h5">{{ title }}</div>
         </slot>
       </div>
-      <div class="modal-body py-0">
+      <div class="modal-body">
         <div class="content" v-if="open">
           <slot />
         </div>
       </div>
-      <div class="modal-footer py-0">
+      <div class="modal-footer">
         <slot name="footer">
           <button 
             class="btn btn-primary" 

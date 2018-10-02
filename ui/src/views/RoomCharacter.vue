@@ -35,6 +35,8 @@ export default {
               controllingIds
               hitpoints
               maxHitpoints
+              sort
+              imageData
             }
           }
         }
@@ -67,6 +69,8 @@ export default {
                 controllingIds
                 hitpoints
                 maxHitpoints
+                sort
+                imageData
               }
             }
           }

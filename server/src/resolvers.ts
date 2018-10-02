@@ -7,6 +7,7 @@ import {
   usersOnRoomResolver,
   entitiesOnRoomResolver,
   roomSubscriptionResolver,
+  jsonExportOnRoomResolver,
 } from './resolvers/room';
 import { authenticateResolver, meResolver } from './resolvers/auth';
 import { addEntityResolver, removeEntityResolver, changeEntityResolver } from './resolvers/entity';
@@ -41,5 +42,6 @@ export default {
     masters: mastersOnRoomResolver,
     users: usersOnRoomResolver,
     entities: entitiesOnRoomResolver,
+    jsonExport: jsonExportOnRoomResolver,
   },
 };

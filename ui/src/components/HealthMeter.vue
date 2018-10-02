@@ -27,6 +27,18 @@ export default {
       required: false,
       default: 'large',
     },
+
+    isMonster: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    amountHidden: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   computed: {
@@ -39,6 +51,10 @@ export default {
     },
 
     hpClass() {
+      if (this.isMonster) {
+        return 'hp-monster';
+      }
+
       if (this.hpPercent >= 65) {
         return 'hp-high';
       } else if (this.hpPercent < 65 && this.hpPercent >= 30) {
@@ -67,6 +83,10 @@ export default {
 }
 
 .hp-low {
+  background-color: $error-color !important;
+}
+
+.hp-monster {
   background-color: $error-color !important;
 }
 

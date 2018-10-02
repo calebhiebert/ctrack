@@ -10,7 +10,7 @@ import gql from 'graphql-tag';
 
 export default {
   components: {
-    NavBar
+    NavBar,
   },
 
   async created() {
@@ -21,8 +21,8 @@ export default {
             id
             name
           }
-        } 
-      `
+        }
+      `,
     });
 
     const authResult = authDetails.data.me;
@@ -37,27 +37,5 @@ export default {
 
     console.log(authDetails.data);
   },
-
-  apollo: {
-    $subscribe: {
-      ticker: {
-        query: gql`
-          subscription {
-            ticker
-          }
-        `,
-
-        variables() {
-          return {};
-        },
-
-        result({data}) {
-          if (data.ticker % 10 === 0) {
-            console.log(data);
-          }
-        }
-      }
-    }
-  }
-}
+};
 </script>

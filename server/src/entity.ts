@@ -14,6 +14,10 @@ export class Entity implements IJSONSerializable<Entity> {
   public hitpoints: number;
   public maxHitpoints: number;
 
+  public sort: number;
+
+  public imageData?: string;
+
   constructor(
     name: string = 'dummy',
     maxHitpoints: number = 100,
@@ -26,6 +30,7 @@ export class Entity implements IJSONSerializable<Entity> {
     this.maxHitpoints = maxHitpoints;
     this.hitpoints = hitpoints === 0 ? maxHitpoints : hitpoints;
     this.id = nanoid();
+    this.sort = 0;
   }
 
   encode(): string {
@@ -41,6 +46,8 @@ export class Entity implements IJSONSerializable<Entity> {
     this.controllingIds = entity.controllingIds;
     this.maxHitpoints = entity.maxHitpoints;
     this.hitpoints = entity.hitpoints;
+    this.sort = entity.sort || 0;
+    this.imageData = entity.imageData;
   }
 }
 

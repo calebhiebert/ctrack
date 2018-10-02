@@ -1,41 +1,74 @@
 <template>
-  <div class="card" :class="{'p-2': expanded, 'p-1 pl-2': !expanded}">
+  <div class="card monster-bg" :class="{'p-2': expanded, 'p-1 pl-2': !expanded, 'monster-bg': entity.type === 'monster', 'character-bg': entity.type === 'character'}">
     <modal ref="hp-modal" title="Change HP" size="small">
       <hitpoint-editor :current-hitpoints="entity.hitpoints" :max-hitpoints="entity.maxHitpoints" @done="onHpEdit" />
       <div slot="footer"></div>
     </modal>
+
+    <modal ref="name-modal" title="Change Name" size="small">
+      <name-editor :current-name="entity.name" @done="onNameEdit" />
+      <div slot="footer"></div>
+    </modal>
+
     <!-- Expanded View -->
     <div v-if="expanded">
-      <div class="columns">
-        <div class="column">
-          <h3>{{ entity.name }}</h3>
+      <div class="d-flex">
+        <div class="mr-2">
+          <user-avatar :id="entity.name" class="avatar-lg" :datauri="entity.imageData" />          
         </div>
-        <div class="column is-narrow">
-          <button class="btn btn-link btn-sm" @click="deleteEntity" v-if="hideDelete !== true">
-            <i class="icon icon-cross" /> 
-          </button>
-          <button class="btn btn-link btn-sm" @click="collapse" v-if="expandable">
-            <i class="icon icon-arrow-up" /> 
-          </button>
+        <div class="expanded">
+          <div class="columns">
+            <div class="column d-flex">
+              <h3>{{ entity.name }}</h3>
+              <button class="btn btn-link btn-sm" @click="editName">
+                <i class="icon icon-edit"></i>
+              </button>
+            </div>
+            <div class="column is-narrow">
+              <button class="btn btn-link btn-sm" @click="sortUp">
+                <i class="icon icon-upward"></i>
+              </button>
+              <button class="btn btn-link btn-sm" @click="sortDown">
+                <i class="icon icon-downward"></i>
+              </button>
+
+              <button class="btn btn-link btn-sm" @click="deleteEntity" v-if="hideDelete !== true">
+                <i class="icon icon-cross" /> 
+              </button>
+              <button class="btn btn-link btn-sm" @click="collapse" v-if="expandable">
+                <i class="icon icon-arrow-up" /> 
+              </button>
+            </div>
+          </div>
+
+          <div class="c-hand" @click="editHp">
+            <health-meter :hitpoints="entity.hitpoints" :maxHitpoints="entity.maxHitpoints" :is-monster="entity.type === 'monster'" />
+          </div>
         </div>
       </div>
 
-      <div class="c-hand" @click="editHp">
-        <health-meter :hitpoints="entity.hitpoints" :maxHitpoints="entity.maxHitpoints" />
-      </div>
     </div>
 
     <!-- Collapsed View -->
     <div class="columns" v-else>
-      <div class="column is-narrow center-children">
+      <div class="column pr-0 is-narrow">
+        <user-avatar :id="entity.name" class="avatar-sm" />
+      </div>
+      <div class="column col-4 v-center-children">
         <span>{{ entity.name }}</span>
       </div>
       <div class="column center-children">
         <div class="c-hand" style="width: 100%;" @click="editHp">
-          <health-meter :hitpoints="entity.hitpoints" :maxHitpoints="entity.maxHitpoints" />
+          <health-meter :hitpoints="entity.hitpoints" :maxHitpoints="entity.maxHitpoints" :is-monster="entity.type === 'monster'" />
         </div>
       </div>
       <div class="column is-narrow">
+        <button class="btn btn-link btn-sm" @click="sortUp">
+          <i class="icon icon-upward"></i>
+        </button>
+        <button class="btn btn-link btn-sm" @click="sortDown">
+          <i class="icon icon-downward"></i>
+        </button>
         <button class="btn btn-link btn-sm float-right" @click="expand">
           <i class="icon icon-arrow-down" /> 
         </button>
@@ -46,6 +79,8 @@
 <script>
 import HealthMeter from '@/components/HealthMeter.vue';
 import HitpointEditor from '@/components/HitpointEditor.vue';
+import UserAvatar from '@/components/UserAvatar.vue';
+import NameEditor from '@/components/NameEditor.vue';
 import Modal from '@/components/Modal.vue';
 import gql from 'graphql-tag';
 
@@ -54,6 +89,8 @@ export default {
     HealthMeter,
     HitpointEditor,
     Modal,
+    NameEditor,
+    UserAvatar,
   },
 
   props: {
@@ -133,12 +170,37 @@ export default {
       this.$refs['hp-modal'].show();
     },
 
+    editName() {
+      this.$refs['name-modal'].show();
+    },
+
     onHpEdit(e) {
       console.log(e);
       this.$refs['hp-modal'].hide();
 
       this.doEdit({
         hitpoints: e.newHitpoints,
+      });
+    },
+
+    sortUp() {
+      this.doEdit({
+        sort: this.entity.sort - 1,
+      });
+    },
+
+    sortDown() {
+      this.doEdit({
+        sort: this.entity.sort + 1,
+      });
+    },
+
+    onNameEdit(e) {
+      console.log(e);
+      this.$refs['name-modal'].hide();
+
+      this.doEdit({
+        name: e.name,
       });
     },
 
@@ -169,6 +231,28 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.v-center-children {
+  display: flex;
+  align-items: center;
+}
+
+.expanded {
+  width: 100%;
+}
+
+.monster-bg {
+  $opac: 0.1;
+
+  background-size: 4rem;
+  background-image: linear-gradient(to right, rgba(226, 3, 55, $opac) 0%, rgba(226, 3, 55, $opac) 0%),
+    url('/img/bg_pattern_1.png');
+}
+
+.character-bg {
+  background-size: 15rem;
+  background-image: url('/img/bg_pattern_0.png');
 }
 </style>
 

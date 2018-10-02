@@ -17,11 +17,21 @@ export default {
       required: false,
       default: 64,
     },
+
+    datauri: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
 
   computed: {
     url() {
-      return `https://api.adorable.io/avatars/${this.size}/${this.id}.png`;
+      if (this.datauri) {
+        return this.datauri;
+      } else {
+        return `https://api.adorable.io/avatars/${this.size}/${this.id}.png`;
+      }
     },
   },
 };

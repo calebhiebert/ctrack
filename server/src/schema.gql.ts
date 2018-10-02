@@ -28,6 +28,7 @@ export default gql`
     masters: [User!]!
     users: [User!]!
     entities: [Entity!]!
+    jsonExport: String!
   }
 
   type AuthResult {
@@ -42,6 +43,8 @@ export default gql`
     controllingIds: [String!]!
     hitpoints: Int!
     maxHitpoints: Int!
+    imageData: String
+    sort: Int!
   }
 
   enum EntityType {
@@ -71,6 +74,8 @@ export default gql`
     name: String!
     hitpoints: Int
     maxHitpoints: Int!
+    sort: Int
+    imageData: String
   }
 
   input ModifyEntityInput {
@@ -79,5 +84,7 @@ export default gql`
     hitpoints: Int
     maxHitpoints: Int
     controllingIds: [String!]
+    sort: Int
+    imageData: String
   }
 `;

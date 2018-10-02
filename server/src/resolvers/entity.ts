@@ -78,6 +78,14 @@ export const changeEntityResolver: IFieldResolver<void, Context> = async (root, 
     entity.controllingIds = input.controllingIds;
   }
 
+  if (input.sort) {
+    entity.sort = input.sort;
+  }
+
+  if (input.imageData) {
+    entity.imageData = input.imageData;
+  }
+
   await rm.changeEntity(entity);
   await rm.notifyChange();
   return entity;

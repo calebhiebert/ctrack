@@ -1,22 +1,31 @@
 <template>
   <div class="container" v-if="!$apollo.loading">
+    <modal ref="export-modal">
+      <entity-export-view :room-id="$route.params.id" />
+      <div slot="footer">
+        <button class="btn btn-primary" @click="$refs['export-modal'].hide()">
+          OK
+        </button>
+      </div>
+    </modal>
+
     <div class="columns">
       <div class="column col-3">
         <ul class="menu">
           <li class="divider" data-content="Toolbox" />
-          <li class="menu-item">
+          <li class="menu-item" @click="addCharacter">
             <a>
               <i class="icon icon-plus"></i>
               Add Character
             </a>
           </li>
-          <li class="menu-item">
+          <li class="menu-item" @click="addMonster">
             <a>
               <i class="icon icon-plus"></i>
               Add Monster
             </a>
           </li>
-          <li class="menu-item">
+          <li class="menu-item" @click="showExportModal">
             <a>
               <i class="icon icon-download"></i>
               Export Character Data
@@ -47,7 +56,7 @@
         </ul>
       </div>
       <div class="column">
-        <div class="empty" v-if="room.entities.length === 0">
+        <div class="empty" v-if="sortedEntities.length === 0">
           <div class="empty-icon">
             <i class="icon icon-search"></i>
           </div>
@@ -58,7 +67,7 @@
             Create some new characters/monsters to get started
           </div>
         </div>
-        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :entity="entity" v-for="entity in room.entities" :key="entity.id" />
+        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :entity="entity" v-for="entity in sortedEntities" :key="entity.id" />
       </div>
     </div>
   </div>
@@ -68,17 +77,21 @@
 import gql from 'graphql-tag';
 import CharacterEdit from '@/components/CharacterEdit.vue';
 import UserTile from '@/components/UserTile.vue';
+import Modal from '@/components/Modal.vue';
+import EntityExportView from '@/components/EntityExportView.vue';
 
 export default {
   components: {
     CharacterEdit,
     UserTile,
+    Modal,
+    EntityExportView,
   },
 
   methods: {
     expandAll() {
       Object.keys(this.$refs).forEach((k) => {
-        if (k.startsWith('ent-')) {
+        if (k.startsWith('ent-') && this.$refs[k][0]) {
           this.$refs[k][0].expand();
         }
       });
@@ -86,10 +99,80 @@ export default {
 
     collapseAll() {
       Object.keys(this.$refs).forEach((k) => {
-        if (k.startsWith('ent-')) {
+        if (k.startsWith('ent-') && this.$refs[k][0]) {
           this.$refs[k][0].collapse();
         }
       });
+    },
+
+    showExportModal() {
+      this.$refs['export-modal'].show();
+    },
+
+    async addCharacter() {
+      const ent = await this.$apollo.mutate({
+        mutation: gql`
+          mutation AddEntity($roomId: ID!, $input: AddEntityInput!) {
+            addEntity(roomId: $roomId, input: $input) {
+              id
+              type
+              name
+              controllingIds
+              hitpoints
+              maxHitpoints
+            }
+          }
+        `,
+
+        variables: {
+          roomId: this.$route.params.id,
+          input: {
+            type: 'character',
+            name: 'Unnamed Character',
+            maxHitpoints: 150,
+          },
+        },
+      });
+
+      console.log(ent);
+    },
+
+    async addMonster() {
+      const ent = await this.$apollo.mutate({
+        mutation: gql`
+          mutation AddEntity($roomId: ID!, $input: AddEntityInput!) {
+            addEntity(roomId: $roomId, input: $input) {
+              id
+              type
+              name
+              controllingIds
+              hitpoints
+              maxHitpoints
+            }
+          }
+        `,
+
+        variables: {
+          roomId: this.$route.params.id,
+          input: {
+            type: 'monster',
+            name: 'Unnamed Monster',
+            maxHitpoints: 150,
+          },
+        },
+      });
+
+      console.log(ent);
+    },
+  },
+
+  computed: {
+    sortedEntities() {
+      if (this.room) {
+        return this.room.entities.splice(0).sort((a, b) => a.sort - b.sort);
+      }
+
+      return [];
     },
   },
 
@@ -115,6 +198,8 @@ export default {
               controllingIds
               hitpoints
               maxHitpoints
+              sort
+              imageData
             }
           }
         }
@@ -147,6 +232,8 @@ export default {
                 controllingIds
                 hitpoints
                 maxHitpoints
+                sort
+                imageData
               }
             }
           }

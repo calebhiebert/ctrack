@@ -1,5 +1,4 @@
 import { IFieldResolver } from 'graphql-tools';
-import nanoid from 'nanoid';
 import { Context } from '../context';
 import { ApolloError } from 'apollo-server-koa';
 import { IRoom, Room } from '../room';
@@ -73,6 +72,32 @@ export const entitiesOnRoomResolver: IFieldResolver<IRoom, Context> = async (roo
   const entities = await rm.getEntities();
 
   return entities;
+};
+
+export const jsonExportOnRoomResolver: IFieldResolver<IRoom, Context> = async (root, args, ctx) => {
+  const rm = new Room(ctx.redis, root.id);
+  const entities = await rm.getEntities();
+
+  let exportEntities: any[];
+
+  if (entities !== null) {
+    exportEntities = entities.map((e) => {
+      return {
+        name: e.name,
+        hitpoints: e.hitpoints,
+        maxHitpoints: e.maxHitpoints,
+        type: e.type,
+        sort: e.sort,
+        imageData: e.imageData,
+      };
+    });
+  } else {
+    exportEntities = [];
+  }
+
+  return JSON.stringify({
+    entities: exportEntities,
+  });
 };
 
 export const roomSubscriptionResolver: IFieldResolver<void, Context> = (root, args, ctx) => {

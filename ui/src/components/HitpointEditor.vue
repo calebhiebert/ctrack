@@ -6,6 +6,10 @@
         {{ hpStatus.status }}
       </p>
     </div>
+    <button class="btn" type="button" @click="fill">
+      Fill
+      <i class="icon icon-plus"></i>
+    </button>
   </form>
 </template>
 <script>
@@ -111,6 +115,18 @@ export default {
         operator: this.operator,
         amount: this.amount,
         newHitpoints: this.hpStatus.newHealth,
+      };
+
+      this.$emit('done', event);
+    },
+
+    fill() {
+      const event = {
+        hitpoints: this.currentHitpoints,
+        maxHitpoints: this.maxHitpoints,
+        operator: this.operator,
+        amount: this.amount,
+        newHitpoints: this.maxHitpoints,
       };
 
       this.$emit('done', event);
