@@ -4,165 +4,187 @@ import { Entity } from './entity';
 import pubsub from './pubsub';
 
 export interface IRoom {
-  id: string;
-  name: string;
-  usePassword: boolean;
-  password: string;
+	id: string;
+	name: string;
+	monsterHpHidden: boolean;
+	usePassword: boolean;
+	password: string;
+}
+
+export interface IRoomChange {
+	monsterHpHidden?: boolean;
 }
 
 export class Room {
-  public static async getUnusedRoomID(redis: Redis) {
-    let id = nanoid(4).toUpperCase();
+	public static async getUnusedRoomID(redis: Redis) {
+		let id = nanoid(4).toUpperCase();
 
-    while ((await redis.get(`room:${id}`)) !== null) {
-      id = nanoid(4).toUpperCase();
-    }
+		while ((await redis.get(`room:${id}`)) !== null) {
+			id = nanoid(4).toUpperCase();
+		}
 
-    return id;
-  }
+		return id;
+	}
 
-  constructor(private redis: Redis, public id: string = '') {}
+	constructor(private redis: Redis, public id: string = '') {}
 
-  public async create(room: IRoom, masterId: string): Promise<void> {
-    const pipeline = this.redis.pipeline();
+	public async create(room: IRoom, masterId: string): Promise<void> {
+		const pipeline = this.redis.pipeline();
 
-    pipeline.sadd('roomkeys', room.id);
-    pipeline.set(`room:${room.id}`, JSON.stringify(room));
-    pipeline.sadd(`room:${room.id}:masters`, masterId);
-    pipeline.sadd(`room:${room.id}:userlist`, masterId);
-    return pipeline.exec();
-  }
+		pipeline.sadd('roomkeys', room.id);
+		pipeline.set(`room:${room.id}`, JSON.stringify(room));
+		pipeline.sadd(`room:${room.id}:masters`, masterId);
+		pipeline.sadd(`room:${room.id}:userlist`, masterId);
+		return pipeline.exec();
+	}
 
-  public async get(): Promise<IRoom | null> {
-    let roomJson = await this.redis.get(this.baseKey);
+	public async get(): Promise<IRoom | null> {
+		let roomJson = await this.redis.get(this.baseKey);
 
-    if (roomJson !== null) {
-      return JSON.parse(roomJson);
-    }
+		if (roomJson !== null) {
+			return JSON.parse(roomJson);
+		}
 
-    return null;
-  }
+		return null;
+	}
 
-  public async addEntity(entity: Entity): Promise<void> {
-    await this.redis.hset(this.subkey('entities'), entity.id, entity.encode());
-  }
+	public async change(room: IRoomChange): Promise<IRoom | null> {
+		const currentRoom = await this.get();
 
-  public async changeEntity(entity: Entity): Promise<Entity> {
-    await this.redis.hset(this.subkey('entities'), entity.id, entity.encode());
-    return entity;
-  }
+		if (currentRoom === null) {
+			return null;
+		}
 
-  public async getEntities(): Promise<Entity[] | null> {
-    const entities = await this.redis.hgetall(this.subkey('entities'));
+		const newRoom = {
+			...currentRoom,
+			...room,
+		};
 
-    if (entities === null) {
-      return null;
-    }
+		await this.redis.set(this.baseKey, JSON.stringify(newRoom));
 
-    return Object.keys(entities).map((e) => {
-      const entity = new Entity();
-      entity.decode(entities[e]);
-      return entity;
-    });
-  }
+		return newRoom;
+	}
 
-  public async deleteEntity(id: string): Promise<void> {
-    return this.redis.hdel(this.subkey('entities'), id);
-  }
+	public async addEntity(entity: Entity): Promise<void> {
+		await this.redis.hset(this.subkey('entities'), entity.id, entity.encode());
+	}
 
-  public async getEntity(id: string): Promise<Entity | null> {
-    const entity = await this.redis.hget(this.subkey('entities'), id);
+	public async changeEntity(entity: Entity): Promise<Entity> {
+		await this.redis.hset(this.subkey('entities'), entity.id, entity.encode());
+		return entity;
+	}
 
-    if (entity === null) {
-      return null;
-    }
+	public async getEntities(): Promise<Entity[] | null> {
+		const entities = await this.redis.hgetall(this.subkey('entities'));
 
-    const ent = new Entity();
+		if (entities === null) {
+			return null;
+		}
 
-    ent.decode(entity);
+		return Object.keys(entities).map((e) => {
+			const entity = new Entity();
+			entity.decode(entities[e]);
+			return entity;
+		});
+	}
 
-    return ent;
-  }
+	public async deleteEntity(id: string): Promise<void> {
+		return this.redis.hdel(this.subkey('entities'), id);
+	}
 
-  public async getUsers(): Promise<string[] | null> {
-    return this.redis.smembers(this.subkey('userlist'));
-  }
+	public async getEntity(id: string): Promise<Entity | null> {
+		const entity = await this.redis.hget(this.subkey('entities'), id);
 
-  public async getMasters(): Promise<string[] | null> {
-    return this.redis.smembers(this.subkey('masters'));
-  }
+		if (entity === null) {
+			return null;
+		}
 
-  public async addUser(id: string): Promise<void> {
-    return this.redis.sadd(this.subkey('userlist'), id);
-  }
+		const ent = new Entity();
 
-  public async addMaster(id: string): Promise<void> {
-    return this.redis.sadd(this.subkey('masters'), id);
-  }
+		ent.decode(entity);
 
-  public async isMaster(id: string): Promise<boolean> {
-    const masters = await this.getMasters();
+		return ent;
+	}
 
-    if (masters === null) {
-      return false;
-    }
+	public async getUsers(): Promise<string[] | null> {
+		return this.redis.smembers(this.subkey('userlist'));
+	}
 
-    return masters.indexOf(id) !== -1;
-  }
+	public async getMasters(): Promise<string[] | null> {
+		return this.redis.smembers(this.subkey('masters'));
+	}
 
-  public async getControlledEntities(id: string): Promise<Entity[] | null> {
-    const entities = await this.getEntities();
+	public async addUser(id: string): Promise<void> {
+		return this.redis.sadd(this.subkey('userlist'), id);
+	}
 
-    if (entities === null) {
-      return null;
-    }
+	public async addMaster(id: string): Promise<void> {
+		return this.redis.sadd(this.subkey('masters'), id);
+	}
 
-    return entities.filter((e) => e.controllingIds.indexOf(id) !== -1);
-  }
+	public async isMaster(id: string): Promise<boolean> {
+		const masters = await this.getMasters();
 
-  public async getUsersFull(): Promise<any[] | null> {
-    const ids = await this.getUsers();
+		if (masters === null) {
+			return false;
+		}
 
-    if (ids !== null) {
-      return this.batchGetUsers(ids);
-    }
+		return masters.indexOf(id) !== -1;
+	}
 
-    return null;
-  }
+	public async getControlledEntities(id: string): Promise<Entity[] | null> {
+		const entities = await this.getEntities();
 
-  public async getMastersFull(): Promise<any[] | null> {
-    const ids = await this.getMasters();
+		if (entities === null) {
+			return null;
+		}
 
-    if (ids !== null) {
-      return this.batchGetUsers(ids);
-    }
+		return entities.filter((e) => e.controllingIds.indexOf(id) !== -1);
+	}
 
-    return null;
-  }
+	public async getUsersFull(): Promise<any[] | null> {
+		const ids = await this.getUsers();
 
-  public async notifyChange(): Promise<void> {
-    pubsub.publish(`room-${this.id}`, { room: await this.get() });
-  }
+		if (ids !== null) {
+			return this.batchGetUsers(ids);
+		}
 
-  private async batchGetUsers(ids: string[]): Promise<any> {
-    return Promise.all(
-      ids.map(async (id) => {
-        let user = await this.redis.get(`user:${id}`);
+		return null;
+	}
 
-        if (user !== null) {
-          user = JSON.parse(user);
-        }
+	public async getMastersFull(): Promise<any[] | null> {
+		const ids = await this.getMasters();
 
-        return user;
-      }),
-    );
-  }
+		if (ids !== null) {
+			return this.batchGetUsers(ids);
+		}
 
-  private subkey(key: string) {
-    return `${this.baseKey}:${key}`;
-  }
+		return null;
+	}
 
-  private get baseKey() {
-    return `room:${this.id}`;
-  }
+	public async notifyChange(): Promise<void> {
+		pubsub.publish(`room-${this.id}`, { room: await this.get() });
+	}
+
+	private async batchGetUsers(ids: string[]): Promise<any> {
+		return Promise.all(
+			ids.map(async (id) => {
+				let user = await this.redis.get(`user:${id}`);
+
+				if (user !== null) {
+					user = JSON.parse(user);
+				}
+
+				return user;
+			})
+		);
+	}
+
+	private subkey(key: string) {
+		return `${this.baseKey}:${key}`;
+	}
+
+	private get baseKey() {
+		return `room:${this.id}`;
+	}
 }

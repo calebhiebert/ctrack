@@ -20,6 +20,7 @@ export default {
           room(id: $id) {
             id
             name
+            monsterHpHidden
             users {
               id
               name
@@ -54,6 +55,7 @@ export default {
             room(id: $id) {
               id
               name
+              monsterHpHidden
               users {
                 id
                 name

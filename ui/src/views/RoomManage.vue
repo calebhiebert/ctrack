@@ -12,6 +12,12 @@
     <div class="columns">
       <div class="column col-3">
         <ul class="menu">
+          <li class="text-center menu-item" @click="copyLink">
+            <h2 class="swell">
+              {{ room.id }}
+              <i class="icon icon-link"></i>
+            </h2>
+          </li>
           <li class="divider" data-content="Toolbox" />
           <li class="menu-item" @click="addCharacter">
             <a>
@@ -49,6 +55,13 @@
               Collapse All
             </a>
           </li>
+          <li class="menu-item">
+            <a>
+              <i class="icon icon-search"></i>
+              <span v-if="!room.monsterHpHidden"> Hide Monster HP</span>
+              <span v-else> Show Monster HP</span>
+            </a>
+          </li>
           <li class="divider" data-content="Users" />
           <li class="menu-item" v-for="user of room.users" :key="user.id">
             <user-tile :user="user" />
@@ -67,7 +80,11 @@
             Create some new characters/monsters to get started
           </div>
         </div>
-        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :entity="entity" v-for="entity in sortedEntities" :key="entity.id" />
+        <div class="divider text-center" data-content="Users"></div>
+        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :entity="entity" v-for="entity in sortedEntities" :key="entity.id" v-if="entity.type === 'character'" />
+
+        <div class="divider text-center" data-content="Monsters"></div>
+        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :entity="entity" v-for="entity in sortedEntities" :key="entity.id" v-if="entity.type === 'monster'" />
       </div>
     </div>
   </div>
@@ -164,6 +181,22 @@ export default {
 
       console.log(ent);
     },
+
+    async copyLink() {
+      await navigator.clipboard.writeText(`${location.protocol}//${location.host}/room/${this.room.id}`);
+      this.$swal({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        type: 'success',
+        title: 'Link copied to clipboard',
+      });
+    },
+
+    async toggleMonsterHpVisibility() {
+      
+    }
   },
 
   computed: {
@@ -183,6 +216,7 @@ export default {
           room(id: $id) {
             id
             name
+            monsterHpHidden
             users {
               id
               name
@@ -217,6 +251,7 @@ export default {
             room(id: $id) {
               id
               name
+              monsterHpHidden
               users {
                 id
                 name
@@ -259,7 +294,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/variables.scss';
+
+$scale-factor: 1.5;
+
 .menu-item {
-  cursor: pointer !important;
+	cursor: pointer !important;
+}
+
+.swell {
+	transition: all 0.25s;
+}
+
+.swell:hover {
+	font-size: 1.7rem;
+	color: $primary-color;
 }
 </style>
