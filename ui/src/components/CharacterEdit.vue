@@ -10,11 +10,16 @@
       <div slot="footer"></div>
     </modal>
 
+    <modal ref="image-modal" title="Change Image" size="small">
+      <image-editor @done="onImageEdit" />
+      <div slot="footer"></div>
+    </modal>
+
     <!-- Expanded View -->
     <div v-if="expanded">
       <div class="d-flex">
         <div class="mr-2">
-          <user-avatar :id="entity.name" class="avatar-lg" :datauri="entity.imageData" />          
+          <user-avatar :id="entity.name" class="avatar-lg c-hand" @clicked="editImage" :datauri="entity.imageData" />
         </div>
         <div class="expanded">
           <div class="columns">
@@ -33,10 +38,10 @@
               </button>
 
               <button class="btn btn-link btn-sm" @click="deleteEntity" v-if="hideDelete !== true">
-                <i class="icon icon-cross" /> 
+                <i class="icon icon-cross" />
               </button>
               <button class="btn btn-link btn-sm" @click="collapse" v-if="expandable">
-                <i class="icon icon-arrow-up" /> 
+                <i class="icon icon-arrow-up" />
               </button>
             </div>
           </div>
@@ -52,7 +57,7 @@
     <!-- Collapsed View -->
     <div class="columns" v-else>
       <div class="column pr-0 is-narrow">
-        <user-avatar :id="entity.name" class="avatar-sm" />
+        <user-avatar :id="entity.name" class="avatar-sm c-hand" @clicked="editImage" :datauri="entity.imageData" />
       </div>
       <div class="column col-4 v-center-children">
         <span>{{ entity.name }}</span>
@@ -70,7 +75,7 @@
           <i class="icon icon-downward"></i>
         </button>
         <button class="btn btn-link btn-sm float-right" @click="expand">
-          <i class="icon icon-arrow-down" /> 
+          <i class="icon icon-arrow-down" />
         </button>
       </div>
     </div>
@@ -82,6 +87,7 @@ import HitpointEditor from '@/components/HitpointEditor.vue';
 import UserAvatar from '@/components/UserAvatar.vue';
 import NameEditor from '@/components/NameEditor.vue';
 import Modal from '@/components/Modal.vue';
+import ImageEditor from '@/components/ImageEditor.vue';
 import gql from 'graphql-tag';
 
 export default {
@@ -91,6 +97,7 @@ export default {
     Modal,
     NameEditor,
     UserAvatar,
+    ImageEditor
   },
 
   props: {
@@ -174,6 +181,10 @@ export default {
       this.$refs['name-modal'].show();
     },
 
+    editImage() {
+      this.$refs['image-modal'].show();
+    },
+
     onHpEdit(e) {
       console.log(e);
       this.$refs['hp-modal'].hide();
@@ -181,6 +192,15 @@ export default {
       this.doEdit({
         hitpoints: e.newHitpoints,
       });
+    },
+
+    onImageEdit(e) {
+      console.log(e);
+      this.$refs['image-modal'].hide();
+
+      this.doEdit({
+        imageData: e.dataUri
+      })
     },
 
     sortUp() {
@@ -228,31 +248,35 @@ export default {
 
 <style lang="scss" scoped>
 .center-children {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .v-center-children {
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .expanded {
-  width: 100%;
+	width: 100%;
 }
 
 .monster-bg {
-  $opac: 0.1;
+	$opac: 0.1;
 
-  background-size: 4rem;
-  background-image: linear-gradient(to right, rgba(226, 3, 55, $opac) 0%, rgba(226, 3, 55, $opac) 0%),
-    url('/img/bg_pattern_1.png');
+	background-size: 4rem;
+	background-image: linear-gradient(
+			to right,
+			rgba(226, 3, 55, $opac) 0%,
+			rgba(226, 3, 55, $opac) 0%
+		),
+		url('/img/bg_pattern_1.png');
 }
 
 .character-bg {
-  background-size: 15rem;
-  background-image: url('/img/bg_pattern_0.png');
+	background-size: 15rem;
+	background-image: url('/img/bg_pattern_0.png');
 }
 </style>
 

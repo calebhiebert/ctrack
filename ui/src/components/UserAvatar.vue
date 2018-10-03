@@ -1,6 +1,6 @@
 <template>
-  <figure class="avatar">
-    <img :src="url" alt="Avatar" />
+  <figure class="avatar" @click="$emit('clicked')">
+    <img :src="url" alt="Avatar" @click="$emit('clicked')" />
   </figure>
 </template>
 <script>

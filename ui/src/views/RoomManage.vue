@@ -55,7 +55,7 @@
               Collapse All
             </a>
           </li>
-          <li class="menu-item">
+          <li class="menu-item" @click="toggleMonsterHpVisibility">
             <a>
               <i class="icon icon-search"></i>
               <span v-if="!room.monsterHpHidden"> Hide Monster HP</span>
@@ -195,14 +195,35 @@ export default {
     },
 
     async toggleMonsterHpVisibility() {
-      
+      await this.changeRoom({
+        monsterHpHidden: !this.room.monsterHpHidden,
+      });
+    },
+
+    changeRoom(room) {
+      return this.$apollo.mutate({
+        mutation: gql`
+          mutation ChangeRoom($id: ID!, $input: ModifyRoomInput!) {
+            changeRoom(id: $id, input: $input) {
+              id
+              name
+              monsterHpHidden
+            }
+          }
+        `,
+
+        variables: { 
+          id: this.room.id,
+          input: room
+        }
+      })
     }
   },
 
   computed: {
     sortedEntities() {
       if (this.room) {
-        return this.room.entities.splice(0).sort((a, b) => a.sort - b.sort);
+        return this.room.entities.slice().sort((a, b) => a.sort - b.sort);
       }
 
       return [];
