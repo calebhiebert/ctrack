@@ -15,6 +15,7 @@ export default gql`
 		addEntity(roomId: ID!, input: AddEntityInput!): Entity!
 		removeEntity(roomId: ID!, entityId: ID!): Boolean!
 		changeEntity(roomId: ID!, entityId: ID!, input: ModifyEntityInput!): Entity!
+    importCharacterData(roomId: ID!, exportJson: String!): Room!
 	}
 
 	type Subscription {

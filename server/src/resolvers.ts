@@ -9,6 +9,7 @@ import {
 	roomSubscriptionResolver,
 	jsonExportOnRoomResolver,
 	changeRoomResolver,
+	jsonImportResolver,
 } from './resolvers/room';
 import { authenticateResolver, meResolver } from './resolvers/auth';
 import {
@@ -32,6 +33,7 @@ export default {
 		addEntity: addEntityResolver,
 		removeEntity: removeEntityResolver,
 		changeEntity: changeEntityResolver,
+		importCharacterData: jsonImportResolver,
 	},
 
 	Subscription: {

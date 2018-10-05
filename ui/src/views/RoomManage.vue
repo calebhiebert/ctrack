@@ -1,12 +1,16 @@
 <template>
   <div class="container" v-if="!$apollo.loading">
-    <modal ref="export-modal">
+    <modal ref="export-modal" title="Export Character Data">
       <entity-export-view :room-id="$route.params.id" />
       <div slot="footer">
         <button class="btn btn-primary" @click="$refs['export-modal'].hide()">
           OK
         </button>
       </div>
+    </modal>
+
+    <modal ref="import-modal" title="Import Character Data">
+      <entity-import-view :room-id="$route.params.id" />
     </modal>
 
     <div class="columns">
@@ -37,7 +41,7 @@
               Export Character Data
             </a>
           </li>
-          <li class="menu-item">
+          <li class="menu-item" @click="showImportModal">
             <a>
               <i class="icon icon-upload"></i>
               Import Character Data
@@ -80,11 +84,11 @@
             Create some new characters/monsters to get started
           </div>
         </div>
-        <div class="divider text-center" data-content="Users"></div>
-        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :entity="entity" v-for="entity in sortedEntities" :key="entity.id" v-if="entity.type === 'character'" />
+        <div class="divider text-center" data-content="Users" v-if="sortedCharacters.length > 0"></div>
+        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :entity="entity" v-for="entity in sortedCharacters" :key="entity.id" />
 
-        <div class="divider text-center" data-content="Monsters"></div>
-        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :entity="entity" v-for="entity in sortedEntities" :key="entity.id" v-if="entity.type === 'monster'" />
+        <div class="divider text-center" data-content="Monsters" v-if="sortedMonsters.length > 0"></div>
+        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :entity="entity" v-for="entity in sortedMonsters" :key="entity.id" />
       </div>
     </div>
   </div>
@@ -96,6 +100,7 @@ import CharacterEdit from '@/components/CharacterEdit.vue';
 import UserTile from '@/components/UserTile.vue';
 import Modal from '@/components/Modal.vue';
 import EntityExportView from '@/components/EntityExportView.vue';
+import EntityImportView from '@/components/EntityImportView.vue';
 
 export default {
   components: {
@@ -103,6 +108,7 @@ export default {
     UserTile,
     Modal,
     EntityExportView,
+    EntityImportView
   },
 
   methods: {
@@ -124,6 +130,10 @@ export default {
 
     showExportModal() {
       this.$refs['export-modal'].show();
+    },
+
+    showImportModal() {
+      this.$refs['import-modal'].show();
     },
 
     async addCharacter() {
@@ -228,6 +238,22 @@ export default {
 
       return [];
     },
+
+    sortedMonsters() {
+      if (this.room) {
+        return this.room.entities.slice().filter(e => e.type === 'monster').sort((a, b) => a.sort - b.sort);
+      }
+
+      return [];
+    },
+
+    sortedCharacters() {
+      if (this.room) {
+        return this.room.entities.slice().filter(e => e.type === 'character').sort((a, b) => a.sort - b.sort);
+      }
+
+      return [];
+    }
   },
 
   apollo: {

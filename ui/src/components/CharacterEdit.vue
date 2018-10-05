@@ -37,12 +37,10 @@
                 <i class="icon icon-downward"></i>
               </button>
 
-              <button class="btn btn-link btn-sm" @click="deleteEntity" v-if="hideDelete !== true">
-                <i class="icon icon-cross" />
-              </button>
-              <button class="btn btn-link btn-sm" @click="collapse" v-if="expandable">
+              <button class="btn btn-link btn-sm float-right" @click="collapse" v-if="expandable">
                 <i class="icon icon-arrow-up" />
               </button>
+              <entity-menu :hide-delete="hideDelete" @delete="deleteEntity" />
             </div>
           </div>
 
@@ -74,6 +72,7 @@
         <button class="btn btn-link btn-sm" @click="sortDown">
           <i class="icon icon-downward"></i>
         </button>
+        <entity-menu :hide-delete="hideDelete" @delete="deleteEntity" />
         <button class="btn btn-link btn-sm float-right" @click="expand">
           <i class="icon icon-arrow-down" />
         </button>
@@ -88,6 +87,7 @@ import UserAvatar from '@/components/UserAvatar.vue';
 import NameEditor from '@/components/NameEditor.vue';
 import Modal from '@/components/Modal.vue';
 import ImageEditor from '@/components/ImageEditor.vue';
+import EntityMenu from '@/components/EntityMenu.vue';
 import gql from 'graphql-tag';
 
 export default {
@@ -97,7 +97,8 @@ export default {
     Modal,
     NameEditor,
     UserAvatar,
-    ImageEditor
+    ImageEditor,
+    EntityMenu
   },
 
   props: {

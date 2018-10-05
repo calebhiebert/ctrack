@@ -1,7 +1,7 @@
 <template>
   <form class="mt-1" @submit.prevent="submit">
     <div class="form-group">
-      <input ref="input" v-model="rawText" class="form-input" placeholder="+20" type="text">
+      <input ref="input" v-model="rawText" class="form-input" placeholder="+20" type="tel">
       <p class="form-input-hint">
         {{ hpStatus.status }}
       </p>
@@ -10,6 +10,7 @@
       Fill
       <i class="icon icon-plus"></i>
     </button>
+    <button class="btn btn-primary float-right" type="submit">OK</button>
   </form>
 </template>
 <script>

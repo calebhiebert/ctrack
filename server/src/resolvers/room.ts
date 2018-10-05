@@ -129,6 +129,17 @@ export const jsonExportOnRoomResolver: IFieldResolver<IRoom, Context> = async (
 	});
 };
 
+export const jsonImportResolver: IFieldResolver<void, Context> = async (
+	root,
+	args,
+	ctx
+) => {
+	const rm = new Room(ctx.redis, args.roomId);
+	const parsedImport = JSON.parse(args.exportJson);
+
+	return rm.get();
+};
+
 export const changeRoomResolver: IFieldResolver<null, Context> = async (
 	root,
 	args,
