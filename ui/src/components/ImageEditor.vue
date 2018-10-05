@@ -6,40 +6,33 @@
   </div>
 </template>
 <script>
-import Pica from 'pica';
+import readAndCompressImage from 'browser-image-resizer';
+
+const imageConfig = {
+  quality: 0.5,
+  maxWidth: 128,
+  maxHeight: 128,
+  autoRotate: true,
+  debug: true,
+};
 
 export default {
-  
   data() {
     return {
       preview: null,
-    }
+    };
   },
 
   methods: {
     async fileChange(e) {
       const file = e.target.files[0];
       this.preview = null;
-      const pica = new Pica();
-
-      const canvas = document.createElement('canvas');
-      canvas.height = 64;
-      canvas.width = 64;
-
-      const result = await this.readFile(file);
-
-      await pica.resize(result, canvas, {
-        quality: 3,
-        alpha: false,
-        unsharpAmount: 0,
-        unsharpRadius: 0,
-        unsharpThreshold: 0,
-        transferable: true
-      });
-      // this.preview = result;
+      const resizedImage = await readAndCompressImage(file, imageConfig);
+      const dataUri = await this.readBlobToDataUri(resizedImage);
+      this.preview = dataUri;
     },
 
-    readFile(file) {
+    readBlobToDataUri(blob) {
       return new Promise((resolve, reject) => {
         const fr = new FileReader();
 
@@ -47,18 +40,18 @@ export default {
           resolve(fr.result);
         });
 
-        fr.readAsDataURL(file);
+        fr.readAsDataURL(blob);
       });
     },
 
     submit() {
       if (this.preview !== null) {
         this.$emit('done', {
-          dataUri: this.preview
-        })
+          dataUri: this.preview,
+        });
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
