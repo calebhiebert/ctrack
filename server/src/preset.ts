@@ -33,14 +33,14 @@ export class Preset implements IJSONSerializable<Preset> {
 	}
 
 	decode(json: string): void {
-		const entity: Preset = JSON.parse(json);
+		const preset: Preset = JSON.parse(json);
 
-		this.id = entity.id;
-		this.type = entity.type;
-		this.name = entity.name;
-		this.maxHitpoints = entity.maxHitpoints;
-		this.hitpoints = entity.hitpoints;
-		this.imageData = entity.imageData;
+		this.id = preset.id;
+		this.type = preset.type;
+		this.name = preset.name;
+		this.maxHitpoints = preset.maxHitpoints;
+		this.hitpoints = preset.hitpoints;
+		this.imageData = preset.imageData;
 	}
 }
 

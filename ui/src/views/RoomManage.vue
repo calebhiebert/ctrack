@@ -15,6 +15,11 @@
       </div>
     </modal>
 
+    <modal ref="preset-modal" title="Presets">
+      <preset-list :presets="room.presets" @spawn="spawnPreset" @delete="deletePreset" />
+      <div slot="footer"></div>
+    </modal>
+
     <div class="columns">
       <div class="column col-3">
         <ul class="menu">
@@ -61,6 +66,12 @@
               Collapse All
             </a>
           </li>
+          <li class="menu-item" @click="showPresetModal">
+            <a>
+              <i class="icon icon-bookmark"></i>
+              Presets
+            </a>
+          </li>
           <li class="menu-item" @click="toggleMonsterHpVisibility">
             <a>
               <i class="icon icon-search"></i>
@@ -103,6 +114,7 @@ import UserTile from '@/components/UserTile.vue';
 import Modal from '@/components/Modal.vue';
 import EntityExportView from '@/components/EntityExportView.vue';
 import EntityImportView from '@/components/EntityImportView.vue';
+import PresetList from '@/components/PresetList.vue';
 import clipboard from 'clipboard-polyfill';
 
 export default {
@@ -111,7 +123,8 @@ export default {
     UserTile,
     Modal,
     EntityExportView,
-    EntityImportView
+    EntityImportView,
+    PresetList,
   },
 
   methods: {
@@ -137,6 +150,10 @@ export default {
 
     showImportModal() {
       this.$refs['import-modal'].show();
+    },
+
+    showPresetModal() {
+      this.$refs['preset-modal'].show();
     },
 
     async addCharacter() {
@@ -193,6 +210,43 @@ export default {
       });
 
       console.log(ent);
+    },
+
+    async spawnPreset(e) {
+      await this.$apollo.mutate({
+        mutation: gql`
+          mutation SpawnPreset($rid: ID!, $pid: ID!, $count: Int!) {
+            spawnPreset(roomId: $rid, presetId: $pid, count: $count) {
+              id
+            }
+          }
+        `,
+
+        variables: {
+          rid: this.room.id,
+          pid: e.id,
+          count: parseInt(e.count), 
+        }
+      });
+
+      this.$refs['preset-modal'].hide();
+    },
+
+    async deletePreset(e) {
+      await this.$apollo.mutate({
+        mutation: gql`
+          mutation DeletePreset($rid: ID!, $pid: ID!) {
+            deletePreset(roomId: $rid, presetId: $pid)
+          }
+        `,
+
+        variables: {
+          rid: this.room.id,
+          pid: e.id,
+        }
+      });
+
+      this.$refs['preset-modal'].hide();
     },
 
     async copyLink() {

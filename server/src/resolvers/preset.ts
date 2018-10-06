@@ -4,6 +4,9 @@ import { ApolloError } from 'apollo-server-koa';
 import { Room, IRoom } from '../room';
 import { Preset } from '../preset';
 import { Entity } from '../entity';
+import createLogger from '../create-logger';
+
+const logger = createLogger('preset');
 
 export const createPresetResolver: IFieldResolver<void, Context> = async (
 	root,
@@ -39,6 +42,7 @@ export const createPresetResolver: IFieldResolver<void, Context> = async (
 	preset.imageData = entity.imageData;
 
 	await rm.createPreset(preset);
+
 	await rm.notifyChange();
 
 	return preset;
@@ -96,7 +100,7 @@ export const spawnPresetResolver: IFieldResolver<void, Context> = async (
 
 	const entities = [];
 
-	for (let i = 0; i < count || 1; i++) {
+	for (let i = 0; i < (count || 1); i++) {
 		const entity = new Entity(
 			preset.name,
 			preset.maxHitpoints,

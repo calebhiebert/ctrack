@@ -67,7 +67,12 @@ export class Room {
 	}
 
 	public async createPreset(preset: Preset): Promise<void> {
-		await this.redis.hset(this.subkey('presets'), preset.id, preset.encode());
+		const result = await this.redis.hset(
+			this.subkey('presets'),
+			preset.id,
+			preset.encode()
+		);
+		return;
 	}
 
 	public async deletePreset(id: string): Promise<void> {

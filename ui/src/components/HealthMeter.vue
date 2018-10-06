@@ -75,24 +75,28 @@ export default {
 @import '@/variables.scss';
 
 .hp-high {
-  background-color: $success-color !important;
+	background-color: $success-color !important;
 }
 
 .hp-med {
-  background-color: $warning-color !important;
+	background-color: $warning-color !important;
 }
 
 .hp-low {
-  background-color: $error-color !important;
+	background-color: $error-color !important;
 }
 
 .hp-monster {
-  background-color: $error-color !important;
+	background-color: $error-color !important;
 }
 
 .bar-item {
-  transition-timing-function: ease-in-out;
-  transition: width 0.4s;
+	transition-timing-function: ease-in-out;
+	transition: width 0.4s;
+}
+
+.bar {
+	background-color: #a0a0a036 !important;
 }
 </style>
 
