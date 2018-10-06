@@ -17,6 +17,7 @@
 <script>
 import gql from 'graphql-tag';
 import saveFile from 'file-saver';
+import clipboard from 'clipboard-polyfill';
 
 export default {
   props: {
@@ -53,7 +54,7 @@ export default {
     },
 
     async copyToClipboard() {
-      await navigator.clipboard.writeText(this.room.jsonExport);
+      await clipboard.writeText(this.room.jsonExport);
       this.$swal({
         toast: true,
         position: 'top-end',
@@ -71,6 +72,6 @@ export default {
 
 <style>
 .expanded {
-  width: 100%;
+	width: 100%;
 }
 </style>

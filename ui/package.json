@@ -9,6 +9,7 @@
 	},
 	"dependencies": {
 		"browser-image-resizer": "^1.2.0",
+		"clipboard-polyfill": "^2.5.4",
 		"file-saver": "^2.0.0-rc.3",
 		"node-sass": "^4.9.3",
 		"register-service-worker": "^1.0.0",

@@ -10,6 +10,10 @@
       Fill
       <i class="icon icon-plus"></i>
     </button>
+    <button class="btn ml-2" type="button" @click="kill">
+      Kill
+      <i class="icon icon-cross"></i>
+    </button>
     <button class="btn btn-primary float-right" type="submit">OK</button>
   </form>
 </template>
@@ -132,6 +136,10 @@ export default {
 
       this.$emit('done', event);
     },
+    
+    kill() {
+      this.$emit('kill');
+    }
   },
 };
 </script>

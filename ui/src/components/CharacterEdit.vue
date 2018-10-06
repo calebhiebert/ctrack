@@ -1,7 +1,7 @@
 <template>
   <div class="card monster-bg" :class="{'p-2': expanded, 'p-1 pl-2': !expanded, 'monster-bg': entity.type === 'monster', 'character-bg': entity.type === 'character'}">
     <modal ref="hp-modal" title="Change HP" size="small">
-      <hitpoint-editor :current-hitpoints="entity.hitpoints" :max-hitpoints="entity.maxHitpoints" @done="onHpEdit" />
+      <hitpoint-editor :current-hitpoints="entity.hitpoints" :max-hitpoints="entity.maxHitpoints" @done="onHpEdit" @kill="onKill" />
       <div slot="footer"></div>
     </modal>
 
@@ -214,6 +214,11 @@ export default {
       this.doEdit({
         sort: this.entity.sort + 1,
       });
+    },
+
+    onKill() {
+      this.$refs['hp-modal'].hide();
+      this.deleteEntity();
     },
 
     onNameEdit(e) {

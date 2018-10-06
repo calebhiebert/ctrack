@@ -10,7 +10,9 @@
     </modal>
 
     <modal ref="import-modal" title="Import Character Data">
-      <entity-import-view :room-id="$route.params.id" />
+      <entity-import-view :room-id="$route.params.id" @done="$refs['import-modal'].hide()" />
+      <div slot="footer">
+      </div>
     </modal>
 
     <div class="columns">
@@ -101,6 +103,7 @@ import UserTile from '@/components/UserTile.vue';
 import Modal from '@/components/Modal.vue';
 import EntityExportView from '@/components/EntityExportView.vue';
 import EntityImportView from '@/components/EntityImportView.vue';
+import clipboard from 'clipboard-polyfill';
 
 export default {
   components: {
@@ -193,7 +196,7 @@ export default {
     },
 
     async copyLink() {
-      await navigator.clipboard.writeText(`${location.protocol}//${location.host}/room/${this.room.id}`);
+      await clipboard.writeText(`${location.protocol}//${location.host}/room/${this.room.id}`);
       this.$swal({
         toast: true,
         position: 'top-end',

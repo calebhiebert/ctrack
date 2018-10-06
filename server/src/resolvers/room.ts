@@ -3,6 +3,7 @@ import { Context } from '../context';
 import { ApolloError } from 'apollo-server-koa';
 import { IRoom, Room } from '../room';
 import pubsub from '../pubsub';
+import { Entity } from '../entity';
 
 export const getRoomResolver: IFieldResolver<null, Context> = async (
 	root,
@@ -136,6 +137,34 @@ export const jsonImportResolver: IFieldResolver<void, Context> = async (
 ) => {
 	const rm = new Room(ctx.redis, args.roomId);
 	const parsedImport = JSON.parse(args.exportJson);
+
+	const invalidFormatError = new ApolloError(
+		'Invalid import format',
+		'INVALID_IMPORT_FORMAT'
+	);
+
+	if (!parsedImport.entities) {
+		throw invalidFormatError;
+	}
+
+	for (const entity of parsedImport.entities) {
+		const e = new Entity();
+
+		if (!entity.name || !entity.maxHitpoints) {
+			throw invalidFormatError;
+		}
+
+		e.name = entity.name;
+		e.hitpoints = entity.hitpoints || entity.maxHitpoints;
+		e.maxHitpoints = entity.maxHitpoints;
+		e.imageData = entity.imageData;
+		e.type = entity.type || 'character';
+		e.sort = entity.sort || 0;
+
+		await rm.addEntity(e);
+	}
+
+	await rm.notifyChange();
 
 	return rm.get();
 };
