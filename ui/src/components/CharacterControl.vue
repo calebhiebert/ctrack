@@ -44,8 +44,6 @@ export default {
         },
       },
     });
-
-    console.log(ent);
     } catch(err) {
       console.log('Could not create Character');
     }

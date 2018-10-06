@@ -182,10 +182,6 @@ export default {
     };
   },
 
-  async mouted() {
-    console.log(this.$refs);
-  },
-
   methods: {
     async deleteEntity() {
       const result = await this.$swal({
@@ -209,8 +205,6 @@ export default {
             entityId: this.entity.id,
           },
         });
-
-        console.log(deleteResult);
       }
     },
 
@@ -247,8 +241,6 @@ export default {
     },
 
     async onControlAssigned(user) {
-      console.log(user);
-
       await this.doEdit({
         controllingIds: [user.id]
       })
@@ -263,7 +255,6 @@ export default {
     },
 
     onHpEdit(e) {
-      console.log(e);
       this.$refs['hp-modal'].hide();
 
       this.doEdit({
@@ -304,7 +295,6 @@ export default {
     },
 
     onImageEdit(e) {
-      console.log(e);
       this.$refs['image-modal'].hide();
 
       this.doEdit({
@@ -330,7 +320,6 @@ export default {
     },
 
     onNameEdit(e) {
-      console.log(e);
       this.$refs['name-modal'].hide();
 
       this.doEdit({
@@ -362,7 +351,6 @@ export default {
     controlledBy() {
       if (this.entity && this.room && this.room.users) {
         const controlledBy = this.entity.controllingIds.map(id => this.room.users.find(u => u.id === id));
-        console.log(controlledBy)
         return controlledBy.filter(u => u !== null && u !== undefined);
       } else {
         return [];

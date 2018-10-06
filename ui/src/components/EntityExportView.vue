@@ -63,8 +63,6 @@ export default {
         type: 'success',
         title: 'Character Data Copied',
       });
-
-      console.log('Wrote text');
     },
   },
 };

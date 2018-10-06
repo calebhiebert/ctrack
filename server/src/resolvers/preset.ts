@@ -43,6 +43,8 @@ export const createPresetResolver: IFieldResolver<void, Context> = async (
 
 	await rm.createPreset(preset);
 
+	console.log('Preset Created');
+
 	await rm.notifyChange();
 
 	return preset;

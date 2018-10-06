@@ -45,7 +45,6 @@ export default {
 
   watch: {
     json(newValue) {
-      console.log('Evaluating JSON');
       this.jsonValid = true;
 
       if (newValue === '') {

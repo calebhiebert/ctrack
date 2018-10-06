@@ -382,6 +382,14 @@ export default {
                 sort
                 imageData
               }
+              presets {
+                id
+                type
+                name
+                hitpoints
+                maxHitpoints
+                imageData
+             }
             }
           }
         `,

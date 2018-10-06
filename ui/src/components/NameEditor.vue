@@ -40,8 +40,6 @@ export default {
         return;
       }
 
-      console.log(this.name);
-
       this.$emit('done', {
         name: this.name,
       });

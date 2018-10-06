@@ -108,7 +108,6 @@ export default {
   },
 
   mounted() {
-    console.log('Mouted');
     this.$refs.input.focus();
   },
 
