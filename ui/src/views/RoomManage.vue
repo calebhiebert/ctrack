@@ -245,8 +245,6 @@ export default {
           pid: e.id,
         }
       });
-
-      this.$refs['preset-modal'].hide();
     },
 
     async copyLink() {
