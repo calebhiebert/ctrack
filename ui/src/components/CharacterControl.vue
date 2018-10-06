@@ -1,6 +1,6 @@
 <template>
   <div>
-    <character-edit ref="editor" :room="room" :entity="entity" v-for="entity of myEntities" :key="entity.id" :expandable="false" :orderable="false" hide-delete :hideSaveAsTemplate="true" :hideSwitchType="true" />
+    <character-edit class="mb-2" ref="editor" :room="room" :entity="entity" v-for="entity of myEntities" :key="entity.id" :hide-assign-control="true" :expandable="false" :orderable="false" hide-delete :hideSaveAsTemplate="true" :hideSwitchType="true" />
   </div>
 </template>
 <script>

@@ -15,6 +15,11 @@
       <div slot="footer"></div>
     </modal>
 
+    <modal ref="user-control-modal" title="Assign Control" size="small">
+      <user-selector :users="room.users" @user-selected="onControlAssigned" />
+      <div slot="footer"></div>
+    </modal>
+
     <!-- Expanded View -->
     <div v-if="expanded">
       <div class="d-flex">
@@ -24,7 +29,7 @@
         <div class="expanded">
           <div class="columns">
             <div class="column d-flex">
-              <h3>{{ entity.name }}</h3>
+              <h3 class="noselect">{{ entity.name }}</h3>
               <button class="btn btn-link btn-sm" @click="editName">
                 <i class="icon icon-edit"></i>
               </button>
@@ -40,7 +45,7 @@
               <button class="btn btn-link btn-sm float-right" @click="collapse" v-if="expandable">
                 <i class="icon icon-arrow-up" />
               </button>
-              <entity-menu :entity="entity" :hide-delete="hideDelete" @delete="deleteEntity" @switch-type="onSwitchType" :hideSaveAsTemplate="hideSaveAsTemplate" :hideSwitchType="hideSwitchType" />
+              <entity-menu :entity="entity" :hide-delete="hideDelete" @delete="deleteEntity" @assign-control="assignControl" @switch-type="onSwitchType" :hideAssignControl="hideAssignControl" :hideSaveAsPreset="hideSaveAsPreset" :hideSwitchType="hideSwitchType" />
             </div>
           </div>
 
@@ -49,13 +54,18 @@
           </div>
 
           <div class="columns">
-            <div class="column">
-              Controlled By
+            <div class="column" v-if="controlledBy.length > 0 && !hideAssignControl">
+              <span class="noselect text-sm text-bold">Controlled By</span>
               <div class="tile tile-centered" v-for="user of controlledBy" :key="user.id">
                 <div class="tile-icon">
                   <user-avatar class="avatar-sm" :id="user.id" />
                 </div>
-                <div class="tile-content">{{ user.name }}</div>
+                <div class="tile-content noselect">
+                  {{ user.name }}
+                  <button class="btn btn-link btn-sm" @click="removeControl(user.id)">
+                    <i class="icon icon-cross"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -73,7 +83,7 @@
         <user-avatar :sub-id="controllerId" :id="entity.name" class="avatar-sm c-hand" @clicked="editImage" :datauri="entity.imageData" />
       </div>
       <div class="column col-4 v-center-children">
-        <span>{{ entity.name }}</span>
+        <span class="noselect">{{ entity.name }}</span>
       </div>
       <div class="column center-children">
         <div class="c-hand" style="width: 100%;" @click="editHp">
@@ -87,7 +97,7 @@
         <button class="btn btn-link btn-sm" @click="sortDown" v-if="orderable === true">
           <i class="icon icon-downward"></i>
         </button>
-        <entity-menu :entity="entity" :hide-delete="hideDelete" @delete="deleteEntity" @switch-type="onSwitchType" :hideSaveAsTemplate="hideSaveAsTemplate" :hideSwitchType="hideSwitchType" />
+        <entity-menu :entity="entity" :hide-delete="hideDelete" @delete="deleteEntity" @assign-control="assignControl" @save-as-preset="saveAsPreset" @switch-type="onSwitchType" :hideAssignControl="hideAssignControl" :hideSaveAsPreset="hideSaveAsPreset" :hideSwitchType="hideSwitchType" />
         <button class="btn btn-link btn-sm float-right" @click="expand">
           <i class="icon icon-arrow-down" />
         </button>
@@ -103,6 +113,7 @@ import NameEditor from '@/components/NameEditor.vue';
 import Modal from '@/components/Modal.vue';
 import ImageEditor from '@/components/ImageEditor.vue';
 import EntityMenu from '@/components/EntityMenu.vue';
+import UserSelector from '@/components/UserSelector.vue';
 import gql from 'graphql-tag';
 
 export default {
@@ -113,7 +124,8 @@ export default {
     NameEditor,
     UserAvatar,
     ImageEditor,
-    EntityMenu
+    EntityMenu,
+    UserSelector
   },
 
   props: {
@@ -140,13 +152,19 @@ export default {
       default: true
     },
 
-    hideSaveAsTemplate: {
+    hideSaveAsPreset: {
       required: false,
       type: Boolean,
       default: false,
     },
 
     hideSwitchType: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
+
+    hideAssignControl: {
       required: false,
       type: Boolean,
       default: false
@@ -224,12 +242,58 @@ export default {
       this.$refs['image-modal'].show();
     },
 
+    assignControl() {
+      this.$refs['user-control-modal'].show();
+    },
+
+    async onControlAssigned(user) {
+      console.log(user);
+
+      await this.doEdit({
+        controllingIds: [user.id]
+      })
+
+      this.$refs['user-control-modal'].hide();
+    },
+
+    removeControl(userId) {
+      this.doEdit({
+        controllingIds: this.entity.controllingIds.filter(cid => cid !== userId)
+      })
+    },
+
     onHpEdit(e) {
       console.log(e);
       this.$refs['hp-modal'].hide();
 
       this.doEdit({
         hitpoints: e.newHitpoints,
+      });
+    },
+
+    async saveAsPreset() {
+      await this.$apollo.mutate({
+        mutation: gql`
+          mutation SavePreset($roomId: ID!, $entityId: ID!) {
+            createPreset(roomId: $roomId, entityId: $entityId) {
+              id
+            }
+          }
+        `,
+
+        variables: {
+          roomId: this.room.id,
+          entityId: this.entity.id
+        }
+      });
+
+      this.$swal({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        type: 'success',
+        title: 'Saved Preset',
       });
     },
 

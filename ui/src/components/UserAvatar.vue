@@ -1,7 +1,7 @@
 <template>
-  <figure class="avatar" @click="$emit('clicked')">
-    <img :src="url" alt="Avatar" @click="$emit('clicked')" />
-    <img :src="subUrl" class="avatar-icon" alt="Controlling Party" v-if="subId !== ''" />
+  <figure class="avatar noselect" @click="$emit('clicked')">
+    <img class="noselect" :src="url" alt="Avatar" @click="$emit('clicked')" />
+    <img :src="subUrl" class="noselect avatar-icon" alt="Controlling Party" v-if="subId !== ''" />
   </figure>
 </template>
 <script>

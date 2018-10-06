@@ -17,6 +17,12 @@ import {
 	removeEntityResolver,
 	changeEntityResolver,
 } from './resolvers/entity';
+import {
+	createPresetResolver,
+	deletePresetResolver,
+	presetsOnRoomResolver,
+	spawnPresetResolver,
+} from './resolvers/preset';
 
 export default {
 	Query: {
@@ -34,6 +40,10 @@ export default {
 		removeEntity: removeEntityResolver,
 		changeEntity: changeEntityResolver,
 		importCharacterData: jsonImportResolver,
+
+		createPreset: createPresetResolver,
+		deletePreset: deletePresetResolver,
+		spawnPreset: spawnPresetResolver,
 	},
 
 	Subscription: {
@@ -51,5 +61,6 @@ export default {
 		users: usersOnRoomResolver,
 		entities: entitiesOnRoomResolver,
 		jsonExport: jsonExportOnRoomResolver,
+		presets: presetsOnRoomResolver,
 	},
 };

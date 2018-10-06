@@ -10,12 +10,19 @@ export default gql`
 	type Mutation {
 		createRoom(input: CreateRoomOptions!): Room!
 		changeRoom(id: ID!, input: ModifyRoomInput!): Room!
-		authenticate(username: String!): AuthResult!
 		joinRoom(input: JoinRoomOptions!): Room!
+
+		authenticate(username: String!): AuthResult!
+
 		addEntity(roomId: ID!, input: AddEntityInput!): Entity!
 		removeEntity(roomId: ID!, entityId: ID!): Boolean!
 		changeEntity(roomId: ID!, entityId: ID!, input: ModifyEntityInput!): Entity!
-    importCharacterData(roomId: ID!, exportJson: String!): Room!
+
+		importCharacterData(roomId: ID!, exportJson: String!): Room!
+
+		createPreset(roomId: ID!, entityId: ID!): Preset!
+		deletePreset(roomId: ID!, presetId: ID!): Boolean!
+		spawnPreset(roomId: ID!, presetId: ID!, count: Int): Room!
 	}
 
 	type Subscription {
@@ -31,6 +38,7 @@ export default gql`
 		users: [User!]!
 		monsterHpHidden: Boolean!
 		entities: [Entity!]!
+		presets: [Preset!]!
 		jsonExport: String!
 	}
 
@@ -48,6 +56,15 @@ export default gql`
 		maxHitpoints: Int!
 		imageData: String
 		sort: Int!
+	}
+
+	type Preset {
+		id: ID!
+		type: EntityType!
+		name: String!
+		hitpoints: Int!
+		maxHitpoints: Int!
+		imageData: String
 	}
 
 	enum EntityType {

@@ -2,6 +2,7 @@ import { Redis } from 'ioredis';
 import nanoid from 'nanoid';
 import { Entity } from './entity';
 import pubsub from './pubsub';
+import { Preset } from './preset';
 
 export interface IRoom {
 	id: string;
@@ -63,6 +64,41 @@ export class Room {
 		await this.redis.set(this.baseKey, JSON.stringify(newRoom));
 
 		return newRoom;
+	}
+
+	public async createPreset(preset: Preset): Promise<void> {
+		await this.redis.hset(this.subkey('presets'), preset.id, preset.encode());
+	}
+
+	public async deletePreset(id: string): Promise<void> {
+		return this.redis.hdel(this.subkey('presets'), id);
+	}
+
+	public async getPreset(id: string): Promise<Preset | null> {
+		const preset = await this.redis.hget(this.subkey('presets'), id);
+
+		if (preset === null) {
+			return null;
+		}
+
+		const p = new Preset();
+		p.decode(preset);
+
+		return p;
+	}
+
+	public async getPresets(): Promise<Preset[] | null> {
+		const presets = await this.redis.hgetall(this.subkey('presets'));
+
+		if (presets === null) {
+			return null;
+		}
+
+		return Object.keys(presets).map((e) => {
+			const preset = new Preset();
+			preset.decode(presets[e]);
+			return preset;
+		});
 	}
 
 	public async addEntity(entity: Entity): Promise<void> {

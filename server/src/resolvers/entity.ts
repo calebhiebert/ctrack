@@ -124,7 +124,9 @@ export const addEntityResolver: IFieldResolver<void, Context> = async (root, arg
     ent.hitpoints = ent.maxHitpoints = input.maxHitpoints;
   }
 
-  ent.controllingIds.push(ctx.user.id);
+  if (!isMaster) {
+    ent.controllingIds.push(ctx.user.id);
+  }
 
   await rm.addEntity(ent);
   room = await rm.get();
