@@ -10,6 +10,24 @@
           Save As Template
         </a>
       </li>
+      <li class="menu-item c-hand" @click="switchType('character')" v-if="hideSwitchType !== true && entity.type !== 'character'">
+        <a>
+          <i class="icon icon-refresh"></i>
+          Make Character
+        </a>
+      </li>
+      <li class="menu-item c-hand" @click="switchType('monster')" v-if="hideSwitchType !== true && entity.type !== 'monster'">
+        <a>
+          <i class="icon icon-refresh"></i>
+          Make Monster
+        </a>
+      </li>
+      <li class="menu-item c-hand" @click="switchType('pet')" v-if="hideSwitchType !== true && entity.type !== 'pet'">
+        <a>
+          <i class="icon icon-refresh"></i>
+          Make Pet
+        </a>
+      </li>
       <li class="menu-item c-hand" @click="deleteEntity" v-if="hideDelete !== true">
         <a>
           <i class="icon icon-cross text-error"></i>
@@ -22,6 +40,11 @@
 <script>
 export default {
   props: {
+    entity: {
+      required: true,
+      type: Object,
+    },
+
     hideDelete: {
       required: false,
       type: Boolean,
@@ -32,6 +55,12 @@ export default {
       required: false,
       type: Boolean,
       default: false,
+    },
+
+    hideSwitchType: {
+      required: false,
+      type: Boolean,
+      default: false
     }
   },
 
@@ -42,6 +71,10 @@ export default {
 
     saveAsTemplate() {
       this.$emit('save-as-template')
+    },
+
+    switchType(type) {
+      this.$emit('switch-type', type);
     }
   }
 }

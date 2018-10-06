@@ -1,20 +1,10 @@
 <template>
-  <div 
-    :class="{active: open, 'modal-sm': size === 'small', 'modal-lg': size === 'large'}"
-    class="modal">
-    <a 
-      href="#close" 
-      class="modal-overlay" 
-      aria-label="Close"
-      @click="close('background')" />
+  <div :class="{active: open, 'modal-sm': size === 'small', 'modal-lg': size === 'large'}" class="modal">
+    <a class="modal-overlay" aria-label="Close" @click="close('background')" />
     <div class="modal-container">
       <div class="modal-header pb-0">
         <slot name="header">
-          <a 
-            href="#close" 
-            class="btn btn-clear float-right" 
-            aria-label="Close" 
-            @click="close('close')" />
+          <a class="btn btn-clear float-right" aria-label="Close" @click="close('close')" />
           <div class="modal-title h5">{{ title }}</div>
         </slot>
       </div>
@@ -25,12 +15,8 @@
       </div>
       <div class="modal-footer">
         <slot name="footer">
-          <button 
-            class="btn btn-primary" 
-            @click="close('ok')">OK</button>
-          <button 
-            class="btn btn-primary ml-1" 
-            @click="close('cancel')">Cancel</button>
+          <button class="btn btn-primary" @click="close('ok')">OK</button>
+          <button class="btn btn-primary ml-1" @click="close('cancel')">Cancel</button>
         </slot>
       </div>
     </div>

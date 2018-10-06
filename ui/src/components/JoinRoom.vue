@@ -91,7 +91,7 @@ export default {
         `,
 
         variables: {
-          id,
+          id: id.toUpperCase(),
         },
       });
 

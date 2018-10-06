@@ -1,13 +1,6 @@
 <template>
   <div>
-    <character-edit
-      ref="editor"
-      :entity="entity" 
-      v-for="entity of myEntities" 
-      :key="entity.id"
-      :expandable="false"
-      hide-delete
-    />
+    <character-edit ref="editor" :room="room" :entity="entity" v-for="entity of myEntities" :key="entity.id" :expandable="false" :orderable="false" hide-delete :hideSaveAsTemplate="true" :hideSwitchType="true" />
   </div>
 </template>
 <script>
@@ -27,6 +20,7 @@ export default {
   },
 
   async created() {
+    try {
     const ent = await this.$apollo.mutate({
       mutation: gql`
         mutation AddEntity($roomId: ID!, $input: AddEntityInput!) {
@@ -52,6 +46,9 @@ export default {
     });
 
     console.log(ent);
+    } catch(err) {
+      console.log('Could not create Character');
+    }
   },
 
   methods: {
@@ -76,7 +73,7 @@ export default {
 
 <style lang="scss" scoped>
 .meter {
-  transition: all 0.25s;
+	transition: all 0.25s;
 }
 </style>
 

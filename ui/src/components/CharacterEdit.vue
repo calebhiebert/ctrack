@@ -19,7 +19,7 @@
     <div v-if="expanded">
       <div class="d-flex">
         <div class="mr-2">
-          <user-avatar :id="entity.name" class="avatar-lg c-hand" @clicked="editImage" :datauri="entity.imageData" />
+          <user-avatar :sub-id="controllerId" :id="entity.name" class="avatar-lg c-hand" @clicked="editImage" :datauri="entity.imageData" />
         </div>
         <div class="expanded">
           <div class="columns">
@@ -30,22 +30,34 @@
               </button>
             </div>
             <div class="column is-narrow">
-              <button class="btn btn-link btn-sm" @click="sortUp">
+              <button class="btn btn-link btn-sm" @click="sortUp" v-if="orderable === true">
                 <i class="icon icon-upward"></i>
               </button>
-              <button class="btn btn-link btn-sm" @click="sortDown">
+              <button class="btn btn-link btn-sm" @click="sortDown" v-if="orderable === true">
                 <i class="icon icon-downward"></i>
               </button>
 
               <button class="btn btn-link btn-sm float-right" @click="collapse" v-if="expandable">
                 <i class="icon icon-arrow-up" />
               </button>
-              <entity-menu :hide-delete="hideDelete" @delete="deleteEntity" />
+              <entity-menu :entity="entity" :hide-delete="hideDelete" @delete="deleteEntity" @switch-type="onSwitchType" :hideSaveAsTemplate="hideSaveAsTemplate" :hideSwitchType="hideSwitchType" />
             </div>
           </div>
 
           <div class="c-hand" @click="editHp">
             <health-meter :hitpoints="entity.hitpoints" :maxHitpoints="entity.maxHitpoints" :is-monster="entity.type === 'monster'" />
+          </div>
+
+          <div class="columns">
+            <div class="column">
+              Controlled By
+              <div class="tile tile-centered" v-for="user of controlledBy" :key="user.id">
+                <div class="tile-icon">
+                  <user-avatar class="avatar-sm" :id="user.id" />
+                </div>
+                <div class="tile-content">{{ user.name }}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -54,8 +66,11 @@
 
     <!-- Collapsed View -->
     <div class="columns" v-else>
+      <div class="column pr-0 is-narrow tooltip" data-tooltip="Player Controlled Character" v-if="entity.controllingIds.length > 0">
+        <i class="icon icon-people"></i>
+      </div>
       <div class="column pr-0 is-narrow">
-        <user-avatar :id="entity.name" class="avatar-sm c-hand" @clicked="editImage" :datauri="entity.imageData" />
+        <user-avatar :sub-id="controllerId" :id="entity.name" class="avatar-sm c-hand" @clicked="editImage" :datauri="entity.imageData" />
       </div>
       <div class="column col-4 v-center-children">
         <span>{{ entity.name }}</span>
@@ -66,13 +81,13 @@
         </div>
       </div>
       <div class="column is-narrow">
-        <button class="btn btn-link btn-sm" @click="sortUp">
+        <button class="btn btn-link btn-sm" @click="sortUp" v-if="orderable === true">
           <i class="icon icon-upward"></i>
         </button>
-        <button class="btn btn-link btn-sm" @click="sortDown">
+        <button class="btn btn-link btn-sm" @click="sortDown" v-if="orderable === true">
           <i class="icon icon-downward"></i>
         </button>
-        <entity-menu :hide-delete="hideDelete" @delete="deleteEntity" />
+        <entity-menu :entity="entity" :hide-delete="hideDelete" @delete="deleteEntity" @switch-type="onSwitchType" :hideSaveAsTemplate="hideSaveAsTemplate" :hideSwitchType="hideSwitchType" />
         <button class="btn btn-link btn-sm float-right" @click="expand">
           <i class="icon icon-arrow-down" />
         </button>
@@ -118,6 +133,29 @@ export default {
       required: false,
       default: true,
     },
+
+    orderable: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
+
+    hideSaveAsTemplate: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+
+    hideSwitchType: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
+
+    room: {
+      required: true,
+      type: Object,
+    }
   },
 
   data() {
@@ -195,6 +233,12 @@ export default {
       });
     },
 
+    onSwitchType(type) {
+      this.doEdit({
+        type
+      });
+    },
+
     onImageEdit(e) {
       console.log(e);
       this.$refs['image-modal'].hide();
@@ -249,6 +293,22 @@ export default {
       });
     },
   },
+
+  computed: {
+    controlledBy() {
+      if (this.entity && this.room && this.room.users) {
+        const controlledBy = this.entity.controllingIds.map(id => this.room.users.find(u => u.id === id));
+        console.log(controlledBy)
+        return controlledBy.filter(u => u !== null && u !== undefined);
+      } else {
+        return [];
+      }
+    },
+
+    controllerId() {
+      return this.controlledBy.length > 0 ? this.controlledBy[0].id : '';
+    }
+  }
 };
 </script>
 
