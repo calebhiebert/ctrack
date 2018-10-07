@@ -36,6 +36,10 @@ const authGuard = async (to, from, next) => {
 			store.commit('setUser', authResult);
 			next();
 		} else {
+			if (to.name === 'room-id') {
+				localStorage.setItem('room-id-after-login', to.params.id);
+			}
+
 			next({ name: 'login' });
 		}
 	}

@@ -62,7 +62,14 @@ export default {
       this.$store.commit('setUser', authResult.user);
       this.$store.commit('setToken', authResult.token);
 
-      this.$router.replace({name: 'home'})
+      const redirect = localStorage.getItem('room-id-after-login');
+
+      if (redirect) {
+        localStorage.removeItem('room-id-after-login');
+        this.$router.replace({name: 'room-id', params: {id: redirect}});
+      } else {
+        this.$router.replace({name: 'home'})
+      }
     }
   }
 }

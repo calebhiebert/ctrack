@@ -200,3 +200,12 @@ export const roomSubscriptionResolver: IFieldResolver<void, Context> = (
 ) => {
 	return pubsub.asyncIterator(`room-${args.id}`);
 };
+
+export const ttlOnRoomResolver: IFieldResolver<IRoom, Context> = async (
+	root,
+	args,
+	ctx
+) => {
+	const rm = new Room(ctx.redis, root.id);
+	return rm.getTTL();
+};

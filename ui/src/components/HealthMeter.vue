@@ -41,10 +41,6 @@ export default {
     },
   },
 
-  mounted() {
-    console.log(this.amountHidden);
-  },
-
   computed: {
     barWidth() {
       return this.hpPercent + '%';

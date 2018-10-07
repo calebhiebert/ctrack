@@ -1,7 +1,7 @@
 <template>
   <figure class="avatar noselect" @click="$emit('clicked')">
     <img class="noselect" :src="url" alt="Avatar" @click="$emit('clicked')" />
-    <img :src="subUrl" class="noselect avatar-icon" alt="Controlling Party" v-if="subId !== ''" />
+    <img :src="subUrl" class="noselect avatar-icon" alt="Controlling Party" v-if="subId !== '' || subdatauri !== null" />
   </figure>
 </template>
 <script>
@@ -29,6 +29,12 @@ export default {
       type: String,
       required: false,
       default: ''
+    },
+
+    subdatauri: {
+      type: String,
+      required: false,
+      default: null,
     }
   },
 
@@ -42,7 +48,11 @@ export default {
     },
 
     subUrl() {
-      return `https://api.adorable.io/avatars/${this.size}/${this.subId}.png`;
+      if (this.subdatauri) {
+        return this.subdatauri;
+      } else {
+        return `https://api.adorable.io/avatars/${this.size}/${this.subId}.png`;
+      }
     }
   },
 };

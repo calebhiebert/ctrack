@@ -11,7 +11,7 @@
           </li>
           <li class="divider" data-content="Users" />
           <li class="menu-item" v-for="user of room.users" :key="user.id">
-            <user-tile :user="user" />
+            <user-tile :user="user" :is-master="isMaster(user)" />
           </li>
         </ul>
       </div>
@@ -66,6 +66,11 @@ export default {
         type: 'success',
         title: 'Link copied to clipboard',
       });
+    },
+
+    isMaster(user) {
+      const isMaster = this.room.masters.find(m => m.id === user.id) !== undefined;
+      return isMaster;
     }
   },
 

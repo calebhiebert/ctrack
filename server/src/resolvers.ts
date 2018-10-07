@@ -10,6 +10,7 @@ import {
 	jsonExportOnRoomResolver,
 	changeRoomResolver,
 	jsonImportResolver,
+	ttlOnRoomResolver,
 } from './resolvers/room';
 import { authenticateResolver, meResolver } from './resolvers/auth';
 import {
@@ -62,5 +63,6 @@ export default {
 		entities: entitiesOnRoomResolver,
 		jsonExport: jsonExportOnRoomResolver,
 		presets: presetsOnRoomResolver,
+		ttl: ttlOnRoomResolver,
 	},
 };

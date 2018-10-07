@@ -1,7 +1,7 @@
 <template>
   <div class="tile tile-centered">
     <div class="tile-icon">
-      <user-avatar class="avatar-md" :id="user.id" />
+      <user-avatar class="avatar-md" :id="user.id" :subdatauri="isMaster ? '/img/crown.png' : null" />
     </div>
     <div class="tile-content">{{ user.name }}</div>
   </div>
@@ -20,6 +20,12 @@ export default {
       type: Object,
       required: true,
     },
+
+    isMaster: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   },
 };
 </script>

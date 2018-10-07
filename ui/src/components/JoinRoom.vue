@@ -6,29 +6,29 @@
         <input class="form-input input-lg" maxlength="4" name="tag" placeholder="XXXX" v-model="tag">
       </div>
 
-        <div class="loading" v-if="loadingRoom"></div>
+      <div class="loading" v-if="loadingRoom"></div>
 
-        <div class="toast toast-error mb-2" v-if="roomNotFound">
-          Sorry, but I couldn't find a room with that tag!
-        </div>
-
-        <div v-if="roomData">
-          <h3>
-            {{ roomData.name }}
-          </h3>
-        </div>
-
-        <div class="form-group" v-if="roomData && roomData.usePassword === true">
-          <label class="form-label label-lg text-bold">Password</label>
-          <input class="form-input input-lg" type="password" name="password" placeholder="****" v-model="password">
+      <div class="toast toast-error mb-2" v-if="roomNotFound">
+        Sorry, but I couldn't find a room with that tag!
       </div>
-          <div class="toast toast-error mb-2" v-if="invalidPassword">
-            Sorry, but that password is not correct!
-          </div>
 
-          <button class="btn btn-primary float-right" :disabled="!canJoin">
-            Join
-          </button>
+      <div v-if="roomData">
+        <h3>
+          {{ roomData.name }}
+        </h3>
+      </div>
+
+      <div class="form-group" v-if="roomData && roomData.usePassword === true">
+        <label class="form-label label-lg text-bold">Password</label>
+        <input class="form-input input-lg" type="password" name="password" placeholder="****" v-model="password">
+      </div>
+      <div class="toast toast-error mb-2" v-if="invalidPassword">
+        Sorry, but that password is not correct!
+      </div>
+
+      <button class="btn btn-primary float-right" :disabled="!canJoin">
+        Join
+      </button>
     </form>
   </div>
 </template>
@@ -137,8 +137,6 @@ export default {
             }
           }
         });
-
-        this.$store.commit('setRoom', joinResult.data.joinRoom);
 
         this.$router.replace({
           name: 'room-id',

@@ -40,6 +40,7 @@ export default gql`
 		entities: [Entity!]!
 		presets: [Preset!]!
 		jsonExport: String!
+		ttl: String!
 	}
 
 	type AuthResult {

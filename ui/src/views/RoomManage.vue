@@ -29,7 +29,7 @@
               <i class="icon icon-link"></i>
             </h2>
           </li>
-          <li class="divider" data-content="Toolbox" />
+          <li class="divider" :data-content="timerText" />
           <li class="menu-item" @click="addCharacter">
             <a>
               <i class="icon icon-plus"></i>
@@ -81,7 +81,7 @@
           </li>
           <li class="divider" data-content="Users" />
           <li class="menu-item" v-for="user of room.users" :key="user.id">
-            <user-tile :user="user" />
+            <user-tile :user="user" :is-master="isMaster(user)" />
           </li>
         </ul>
       </div>
@@ -120,6 +120,7 @@ import EntityExportView from '@/components/EntityExportView.vue';
 import EntityImportView from '@/components/EntityImportView.vue';
 import PresetList from '@/components/PresetList.vue';
 import clipboard from 'clipboard-polyfill';
+import { setInterval } from 'timers';
 
 export default {
   components: {
@@ -129,6 +130,18 @@ export default {
     EntityExportView,
     EntityImportView,
     PresetList,
+  },
+
+  data() {
+    setInterval(() => {
+      if (this.ttl > 0) {
+        this.ttl--;
+      }
+    }, 1000)
+
+    return {
+      ttl: -3,
+    }
   },
 
   methods: {
@@ -286,6 +299,11 @@ export default {
           input: room
         }
       })
+    },
+
+    isMaster(user) {
+      const isMaster = this.room.masters.find(m => m.id === user.id) !== undefined;
+      return isMaster;
     }
   },
 
@@ -312,6 +330,19 @@ export default {
       }
 
       return [];
+    },
+
+    timerText() {
+      let tt = 'Expires ';
+      const hours = Math.floor(this.ttl / 60 / 60);
+      const minutes = Math.floor((this.ttl / 60) % 60);
+      const seconds = this.ttl % 60;
+
+      const minutesText = minutes < 10 ? '0' + minutes : minutes;
+      const secondsText = seconds < 10 ? '0' + seconds : seconds;
+      const hoursText = hours < 10 ? '0' + hours : hours;
+
+      return `Expires ${hoursText}:${minutesText}:${secondsText}`;
     }
   },
 
@@ -323,6 +354,7 @@ export default {
             id
             name
             monsterHpHidden
+            ttl
             users {
               id
               name
@@ -366,6 +398,7 @@ export default {
               id
               name
               monsterHpHidden
+              ttl
               users {
                 id
                 name
@@ -407,8 +440,8 @@ export default {
         },
       },
 
-      result(res) {
-        console.log(res);
+      result({data: {room}}) {
+        this.ttl = room.ttl;
       },
     },
   },
