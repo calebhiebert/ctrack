@@ -4,15 +4,49 @@
 @import 'spectre.css/src/spectre-icons.scss';
 
 .noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
 
 .is-narrow {
-  flex: none;
+	flex: none;
+}
+
+.list-enter-active {
+	transition: all 0.3s ease;
+}
+
+.list-leave-active {
+	position: absolute;
+	width: 74%;
+	transition: all 0.3s ease;
+}
+
+.list-enter,
+.list-leave-to {
+	transform: translateX(-10px);
+	opacity: 0;
+}
+
+.list-move {
+	transition: transform 0.3s ease;
+}
+
+.fade-enter-active {
+	top: 0 !important;
+	transition: all 0.3s ease;
+}
+
+.fade-leave-active {
+	transition: all 0.3s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
 }

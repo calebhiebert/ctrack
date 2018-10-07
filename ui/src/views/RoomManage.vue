@@ -98,10 +98,14 @@
           </div>
         </div>
         <div class="divider text-center" data-content="Users" v-if="sortedCharacters.length > 0"></div>
-        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :room="room" :entity="entity" v-for="entity in sortedCharacters" :key="entity.id" />
+        <transition-group name="list" tag="div">
+          <character-edit class="mt-2" :ref="`ent-${entity.id}`" :room="room" :entity="entity" v-for="entity in sortedCharacters" :key="entity.id" />
+        </transition-group>
 
         <div class="divider text-center" data-content="Monsters" v-if="sortedMonsters.length > 0"></div>
-        <character-edit class="mt-2" :ref="`ent-${entity.id}`" :room="room" :entity="entity" v-for="entity in sortedMonsters" :key="entity.id" />
+        <transition-group name="list" tag="div">
+          <character-edit class="mt-2" :ref="`ent-${entity.id}`" :room="room" :entity="entity" v-for="entity in sortedMonsters" :key="entity.id" />
+        </transition-group>
       </div>
     </div>
   </div>

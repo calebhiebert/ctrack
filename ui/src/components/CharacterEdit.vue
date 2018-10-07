@@ -35,22 +35,22 @@
               </button>
             </div>
             <div class="column is-narrow">
-              <button class="btn btn-link btn-sm" @click="sortUp" v-if="orderable === true">
+              <button class="btn btn-link btn-sm" @click="sortUp" v-if="orderable === true && !disableControls">
                 <i class="icon icon-upward"></i>
               </button>
-              <button class="btn btn-link btn-sm" @click="sortDown" v-if="orderable === true">
+              <button class="btn btn-link btn-sm" @click="sortDown" v-if="orderable === true && !disableControls">
                 <i class="icon icon-downward"></i>
               </button>
 
-              <button class="btn btn-link btn-sm float-right" @click="collapse" v-if="expandable">
+              <button class="btn btn-link btn-sm float-right" @click="collapse" v-if="expandable && !disableControls">
                 <i class="icon icon-arrow-up" />
               </button>
-              <entity-menu :entity="entity" :hide-delete="hideDelete" @delete="deleteEntity" @assign-control="assignControl" @switch-type="onSwitchType" :hideAssignControl="hideAssignControl" :hideSaveAsPreset="hideSaveAsPreset" :hideSwitchType="hideSwitchType" />
+              <entity-menu v-if="!disableControls" :entity="entity" :hide-delete="hideDelete" @delete="deleteEntity" @assign-control="assignControl" @switch-type="onSwitchType" :hideAssignControl="hideAssignControl" :hideSaveAsPreset="hideSaveAsPreset" :hideSwitchType="hideSwitchType" />
             </div>
           </div>
 
           <div class="c-hand" @click="editHp">
-            <health-meter :hitpoints="entity.hitpoints" :maxHitpoints="entity.maxHitpoints" :is-monster="entity.type === 'monster'" />
+            <health-meter :hitpoints="entity.hitpoints" :amount-hidden="hpHidden" :maxHitpoints="entity.maxHitpoints" :is-monster="entity.type === 'monster'" />
           </div>
 
           <div class="columns">
@@ -62,7 +62,7 @@
                 </div>
                 <div class="tile-content noselect">
                   {{ user.name }}
-                  <button class="btn btn-link btn-sm" @click="removeControl(user.id)">
+                  <button class="btn btn-link btn-sm" @click="removeControl(user.id)" v-if="!disableControls">
                     <i class="icon icon-cross"></i>
                   </button>
                 </div>
@@ -75,7 +75,7 @@
     </div>
 
     <!-- Collapsed View -->
-    <div class="columns" v-else>
+    <div class="columns" v-if="!expanded">
       <div class="column pr-0 is-narrow tooltip" data-tooltip="Player Controlled Character" v-if="entity.controllingIds.length > 0">
         <i class="icon icon-people"></i>
       </div>
@@ -87,10 +87,10 @@
       </div>
       <div class="column center-children">
         <div class="c-hand" style="width: 100%;" @click="editHp">
-          <health-meter :hitpoints="entity.hitpoints" :maxHitpoints="entity.maxHitpoints" :is-monster="entity.type === 'monster'" />
+          <health-meter :hitpoints="entity.hitpoints" :maxHitpoints="entity.maxHitpoints" :amount-hidden="hpHidden" :is-monster="entity.type === 'monster'" />
         </div>
       </div>
-      <div class="column is-narrow">
+      <div class="column is-narrow" v-if="!disableControls">
         <button class="btn btn-link btn-sm" @click="sortUp" v-if="orderable === true">
           <i class="icon icon-upward"></i>
         </button>
@@ -134,6 +134,12 @@ export default {
       required: true,
     },
 
+    disableControls: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
     hideDelete: {
       type: Boolean,
       required: false,
@@ -173,6 +179,12 @@ export default {
     room: {
       required: true,
       type: Object,
+    },
+
+    hpHidden: {
+      required: false,
+      type: Boolean,
+      default: false,
     }
   },
 
@@ -225,18 +237,26 @@ export default {
     },
 
     editHp() {
+      if (this.disableControls) return;
+
       this.$refs['hp-modal'].show();
     },
 
     editName() {
+      if (this.disableControls) return;
+
       this.$refs['name-modal'].show();
     },
 
     editImage() {
+      if (this.disableControls) return;
+
       this.$refs['image-modal'].show();
     },
 
     assignControl() {
+      if (this.disableControls) return;
+
       this.$refs['user-control-modal'].show();
     },
 

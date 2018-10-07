@@ -1,8 +1,8 @@
 <template>
   <div class="bar noselect" :class="{'bar-sm': barSize === 'small'}">
     <!-- Large Bar -->
-    <div class="bar-item noselect tooltip" :data-tooltip="tooltipText" :class="[hpClass]" :style="{width: barWidth}" v-if="barSize === 'large'">
-      {{ hitpoints.toFixed(0) }}/{{ maxHitpoints }}
+    <div class="bar-item noselect" :data-tooltip="tooltipText" :class="[hpClass, amountHidden ? '' : 'tooltip']" :style="{width: barWidth}" v-if="barSize === 'large'">
+      <span v-if="!amountHidden">{{ hitpoints.toFixed(0) }}/{{ maxHitpoints }}</span>
     </div>
 
     <!-- Small bar -->
@@ -39,6 +39,10 @@ export default {
       required: false,
       default: false,
     },
+  },
+
+  mounted() {
+    console.log(this.amountHidden);
   },
 
   computed: {
