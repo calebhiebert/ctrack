@@ -6,9 +6,12 @@
 	"scripts": {
 		"dev": "nodemon -r dotenv/config -w src -w index.ts -e ts --exec ts-node --no-cache --files -r dotenv/config index.ts | pino-pretty -ct",
 		"up": "docker-compose -f docker-compose-dev.yml up -d",
-		"down": "docker-compose -f docker-compose-dev.yml down"
+		"down": "docker-compose -f docker-compose-dev.yml down",
+		"build": "tsc --project tsconfig.json",
+		"start": "node dist/index.js"
 	},
 	"devDependencies": {
+		"@types/graphql": "^14.0.1",
 		"@types/ioredis": "^4.0.1",
 		"@types/koa": "^2.0.46",
 		"@types/nanoid": "^1.2.0",

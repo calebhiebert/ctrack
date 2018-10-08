@@ -1,0 +1,8 @@
+version: '3'
+services:
+  server:
+    image: panchem/ctrack-server
+  ui:
+    image: panchem/ctrack-ui
+  redis:
+    image: redis:4-alpine

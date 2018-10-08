@@ -11,10 +11,16 @@ Vue.use(VueApollo);
 // Name of the localStorage item
 const AUTH_TOKEN = 'auth-token';
 
+const baseHttp = `${location.protocol}//${location.hostname}`;
+const baseWs = `${location.protocol === 'http:' ? 'ws:' : 'wss:'}//${
+	location.hostname
+}`;
+
 // Http endpoint
 const httpEndpoint =
-	process.env.VUE_APP_GRAPHQL_HTTP ||
-	`${location.protocol}//${location.hostname}:3400/graphql`;
+	process.env.NODE_ENV === 'production'
+		? `${baseHttp}/api/graphql`
+		: `${baseHttp}:3400/graphql`;
 
 // Config
 const defaultOptions = {
@@ -23,10 +29,9 @@ const defaultOptions = {
 	// You can use `wss` for secure connection (recommended in production)
 	// Use `null` to disable subscriptions
 	wsEndpoint:
-		process.env.VUE_APP_GRAPHQL_WS ||
-		`${location.protocol === 'http:' ? 'ws:' : 'wss:'}//${
-			location.hostname
-		}:3400/graphql`,
+		process.env.NODE_ENV === 'production'
+			? `${baseWs}/api/graphql`
+			: `${baseWs}:3400/graphql`,
 	// LocalStorage token
 	tokenName: AUTH_TOKEN,
 	// Enable Automatic Query persisting with Apollo Engine
