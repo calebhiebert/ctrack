@@ -1,0 +1,23 @@
+version: '3'
+services:
+  server:
+    build:
+      context: server
+      dockerfile: Dockerfile
+    environment:
+      PORT: 3400
+      LOG_LEVEL: debug
+      REDIS: redis://redis:6379
+      NODE_ENV: production
+    ports:
+      - 3400:3400
+  ui:
+    build:
+      context: ui
+      dockerfile: Dockerfile
+      args:
+        nodenv: development
+    ports:
+      - 8080:80
+  redis:
+    image: redis:4-alpine

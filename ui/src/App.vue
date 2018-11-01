@@ -14,8 +14,6 @@ export default {
   },
 
   async created() {
-    console.log(process.env.NODE_ENV, process.env);
-
     const authDetails = await this.$apollo.query({
       query: gql`
         query AuthCheck {
@@ -36,8 +34,6 @@ export default {
         name: 'login',
       });
     }
-
-    console.log(authDetails.data);
   },
 };
 </script>

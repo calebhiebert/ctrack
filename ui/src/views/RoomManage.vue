@@ -137,11 +137,11 @@ export default {
       if (this.ttl > 0) {
         this.ttl--;
       }
-    }, 1000)
+    }, 1000);
 
     return {
       ttl: -3,
-    }
+    };
   },
 
   methods: {
@@ -197,8 +197,6 @@ export default {
           },
         },
       });
-
-      console.log(ent);
     },
 
     async addMonster() {
@@ -225,8 +223,6 @@ export default {
           },
         },
       });
-
-      console.log(ent);
     },
 
     async spawnPreset(e) {
@@ -242,8 +238,8 @@ export default {
         variables: {
           rid: this.room.id,
           pid: e.id,
-          count: parseInt(e.count), 
-        }
+          count: parseInt(e.count),
+        },
       });
 
       this.$refs['preset-modal'].hide();
@@ -260,7 +256,7 @@ export default {
         variables: {
           rid: this.room.id,
           pid: e.id,
-        }
+        },
       });
     },
 
@@ -294,17 +290,17 @@ export default {
           }
         `,
 
-        variables: { 
+        variables: {
           id: this.room.id,
-          input: room
-        }
-      })
+          input: room,
+        },
+      });
     },
 
     isMaster(user) {
-      const isMaster = this.room.masters.find(m => m.id === user.id) !== undefined;
+      const isMaster = this.room.masters.find((m) => m.id === user.id) !== undefined;
       return isMaster;
-    }
+    },
   },
 
   computed: {
@@ -318,7 +314,10 @@ export default {
 
     sortedMonsters() {
       if (this.room) {
-        return this.room.entities.slice().filter(e => e.type === 'monster').sort((a, b) => a.sort - b.sort);
+        return this.room.entities
+          .slice()
+          .filter((e) => e.type === 'monster')
+          .sort((a, b) => a.sort - b.sort);
       }
 
       return [];
@@ -326,7 +325,10 @@ export default {
 
     sortedCharacters() {
       if (this.room) {
-        return this.room.entities.slice().filter(e => e.type === 'character').sort((a, b) => a.sort - b.sort);
+        return this.room.entities
+          .slice()
+          .filter((e) => e.type === 'character')
+          .sort((a, b) => a.sort - b.sort);
       }
 
       return [];
@@ -343,7 +345,7 @@ export default {
       const hoursText = hours < 10 ? '0' + hours : hours;
 
       return `Expires ${hoursText}:${minutesText}:${secondsText}`;
-    }
+    },
   },
 
   apollo: {
@@ -424,7 +426,7 @@ export default {
                 hitpoints
                 maxHitpoints
                 imageData
-             }
+              }
             }
           }
         `,
@@ -434,13 +436,9 @@ export default {
             id: this.$route.params.id,
           };
         },
-
-        updateQuery: (previous, newData) => {
-          console.log('SUB', previous, newData);
-        },
       },
 
-      result({data: {room}}) {
+      result({ data: { room } }) {
         this.ttl = room.ttl;
       },
     },
@@ -454,15 +452,15 @@ export default {
 $scale-factor: 1.5;
 
 .menu-item {
-	cursor: pointer !important;
+  cursor: pointer !important;
 }
 
 .swell {
-	transition: all 0.25s;
+  transition: all 0.25s;
 }
 
 .swell:hover {
-	font-size: 1.7rem;
-	color: $primary-color;
+  font-size: 1.7rem;
+  color: $primary-color;
 }
 </style>

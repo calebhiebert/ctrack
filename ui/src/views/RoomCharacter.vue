@@ -17,7 +17,7 @@ import CharacterEdit from '@/components/CharacterEdit.vue';
 export default {
   components: {
     CharacterControl,
-    CharacterEdit
+    CharacterEdit,
   },
 
   apollo: {
@@ -90,14 +90,6 @@ export default {
             id: this.$route.params.id,
           };
         },
-
-        updateQuery: (previous, newData) => {
-          console.log('SUB', previous, newData);
-        },
-      },
-
-      result(res) {
-        console.log(res);
       },
     },
   },
@@ -105,11 +97,14 @@ export default {
   computed: {
     sortedMonsters() {
       if (this.room) {
-        return this.room.entities.slice().filter(e => e.type === 'monster').sort((a, b) => a.sort - b.sort);
+        return this.room.entities
+          .slice()
+          .filter((e) => e.type === 'monster')
+          .sort((a, b) => a.sort - b.sort);
       }
 
       return [];
     },
-  }
+  },
 };
 </script>

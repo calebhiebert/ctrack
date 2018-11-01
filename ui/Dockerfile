@@ -1,5 +1,6 @@
 FROM node:8-alpine
-ENV NODE_ENV production
+ARG nodenv=production
+ENV NODE_ENV $nodenv
 
 WORKDIR /usr/src/app
 

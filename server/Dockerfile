@@ -12,6 +12,6 @@ WORKDIR /usr/app
 
 COPY package.json yarn.lock ./
 COPY --from=0 /usr/src/app/dist ./dist/
-RUN ls -lah && yarn --prod
+RUN yarn --prod
 
 CMD [ "yarn", "start" ]

@@ -69,15 +69,18 @@ export default {
     },
 
     isMaster(user) {
-      const isMaster = this.room.masters.find(m => m.id === user.id) !== undefined;
+      const isMaster = this.room.masters.find((m) => m.id === user.id) !== undefined;
       return isMaster;
-    }
+    },
   },
 
   computed: {
     sortedMonsters() {
       if (this.room) {
-        return this.room.entities.slice().filter(e => e.type === 'monster').sort((a, b) => a.sort - b.sort);
+        return this.room.entities
+          .slice()
+          .filter((e) => e.type === 'monster')
+          .sort((a, b) => a.sort - b.sort);
       }
 
       return [];
@@ -85,11 +88,14 @@ export default {
 
     sortedCharacters() {
       if (this.room) {
-        return this.room.entities.slice().filter(e => e.type === 'character').sort((a, b) => a.sort - b.sort);
+        return this.room.entities
+          .slice()
+          .filter((e) => e.type === 'character')
+          .sort((a, b) => a.sort - b.sort);
       }
 
       return [];
-    }
+    },
   },
 
   apollo: {
@@ -161,13 +167,8 @@ export default {
             id: this.$route.params.id,
           };
         },
-
-        updateQuery: (previous, newData) => {
-          console.log('SUB', previous, newData);
-        },
       },
     },
-
   },
 };
 </script>
@@ -178,15 +179,15 @@ export default {
 $scale-factor: 1.5;
 
 .menu-item {
-	cursor: pointer !important;
+  cursor: pointer !important;
 }
 
 .swell {
-	transition: all 0.25s;
+  transition: all 0.25s;
 }
 
 .swell:hover {
-	font-size: 1.7rem;
-	color: $primary-color;
+  font-size: 1.7rem;
+  color: $primary-color;
 }
 </style>
